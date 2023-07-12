@@ -10,7 +10,7 @@ namespace DataAccess.Repositories
 {
     internal class UserRepository : IUserRepository
     {
-        private HabitaroDbContext context;
+        private readonly HabitaroDbContext context;
 
         public UserRepository(HabitaroDbContext context)
         {
@@ -19,27 +19,30 @@ namespace DataAccess.Repositories
 
         public void Delete(User user)
         {
-            throw new NotImplementedException();
+            context.Users.Remove(user);
         }
 
         public void DeleteById(int id)
         {
-            throw new NotImplementedException();
+            var user = context.Find<User>(id);
+            context.Users.Remove(user);
         }
 
         public IEnumerable<User> GetAll()
         {
-            throw new NotImplementedException();
+            var users = context.Users.ToList();
+            return users;
         }
 
         public User GetById(int id)
         {
-            throw new NotImplementedException();
+            var user = context.Find<User>(id);
+            return user;
         }
 
         public void Update(User user)
         {
-            throw new NotImplementedException();
+            context.Users.Update(user);
         }
     }
 }
