@@ -19,5 +19,7 @@ namespace WebApi.Models
         public string Status { get; set; }
 
         public int RankId { get; set; }
+
+        public string Rank { get; set; }
     }
 }
