@@ -21,11 +21,10 @@ namespace DataAccess.Repositories
         {
             context.Users.Remove(user);
         }
-
-        public void DeleteById(int id)
+        
+        public void Add(User user) 
         {
-            var user = context.Find<User>(id);
-            context.Users.Remove(user);
+            context.Users.Add(user);
         }
 
         public IEnumerable<User> GetAll()
@@ -34,7 +33,7 @@ namespace DataAccess.Repositories
             return users;
         }
 
-        public User GetById(int id)
+        public User? GetById(int id)
         {
             var user = context.Find<User>(id);
             return user;

@@ -11,11 +11,11 @@ namespace DataAccess.Repositories.Abstractions
     {
         IEnumerable<User> GetAll();
 
-        User GetById(int id);
+        User? GetById(int id);
+
+        void Add(User user);
 
         void Update(User user);
-
-        void DeleteById(int id);
 
         void Delete(User user);
     }
