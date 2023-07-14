@@ -43,5 +43,11 @@ namespace DataAccess.Repositories
         {
             context.Users.Update(user);
         }
+
+        public User? GetByEmail(string email)
+        {
+            var user = context.Find<User>(email);
+            return user;
+        }
     }
 }

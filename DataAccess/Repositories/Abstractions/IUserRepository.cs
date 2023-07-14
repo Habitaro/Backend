@@ -13,6 +13,8 @@ namespace DataAccess.Repositories.Abstractions
 
         User? GetById(int id);
 
+        User? GetByEmail(string email);
+
         void Add(User user);
 
         void Update(User user);
