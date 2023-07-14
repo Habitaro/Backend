@@ -11,5 +11,7 @@
         void Create(UserModel model);
 
         void Update(UserModel model);
+
+        void Remove(UserModel model);
     }
 }
