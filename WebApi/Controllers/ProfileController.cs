@@ -25,7 +25,7 @@ namespace WebApi.Controllers
             return Ok(users);
         }
 
-        [HttpGet("/id")]
+        [HttpGet("{id}")]
         public ActionResult<UserModel> GetById(int id)
         {
             var user = serviceManager.UserService.GetById(id);

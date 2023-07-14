@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Repositories
 {
-    internal class RepositoryManager : IRepositoryManager
+    public class RepositoryManager : IRepositoryManager
     {
         private readonly HabitaroDbContext context;
 
@@ -40,7 +40,7 @@ namespace DataAccess.Repositories
                         Email = $"user{i}@gmail.com",
                         AvatarId = i,
                         Password = $"userPassword{i}",
-                        RankId = i,,
+                        RankId = i,
                         Status = "Sleepin",
                     });
                 }
