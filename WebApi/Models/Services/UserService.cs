@@ -36,7 +36,14 @@ namespace WebApi.Models.Services
 
         public UserModel? GetByEmail(string email)
         {
-            throw new NotImplementedException();
+            var entity = _repositoryManager.UserRepository.GetByEmail(email);
+            if (entity != null)
+            {
+                var model = _mapper.Map<User, UserModel>(entity);
+                return model;
+            }
+
+            return null;
         }
 
         public UserModel? GetById(int id)
