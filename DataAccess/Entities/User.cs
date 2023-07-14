@@ -10,17 +10,17 @@ namespace DataAccess.Entities
     {
         public int Id { get; set; }
 
-        public string Username { get; set; } = null!;
+        public string Username { get; set; }
 
-        public string Email { get; set; } = null!;
+        public string Email { get; set; }
 
-        public string Password { get; set; } = null!;
+        public string Password { get; set; }
 
         public int AvatarId { get; set; }
 
-        public string Status { get; set; } = null!;
+        public string Status { get; set; }
 
-        public Rank Rank { get; set; } = null!;
+        public Rank Rank { get; set; }
 
         public int RankId { get; set; }
     }

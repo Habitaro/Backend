@@ -18,5 +18,11 @@ namespace DataAccess
         public DbSet<User> Users { get; set; }
 
         public DbSet<Rank> Ranks { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseInMemoryDatabase(databaseName: "HabitaroDb");
+            base.OnConfiguring(optionsBuilder);
+        }
     }
 }
