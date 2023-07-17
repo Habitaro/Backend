@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models;
+using WebApi.Models.Contracts;
 using WebApi.Models.Services.Abstractions;
 
 namespace WebApi.Controllers
@@ -19,7 +20,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("Register")]
-        public IActionResult Register(UserModel model)
+        public IActionResult Register(UserForCreationDto model)
         {
             serviceManager.UserService.Create(model);
             return Ok();
