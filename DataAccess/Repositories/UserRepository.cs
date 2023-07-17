@@ -1,5 +1,6 @@
 ﻿using DataAccess.Entities;
 using DataAccess.Repositories.Abstractions;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace DataAccess.Repositories
 
         public IEnumerable<User> GetAll()
         {
-            var users = context.Users.ToList();
+            var users = context.Users.Select(u => u).Include(u => u.Rank).ToList();
             return users;
         }
 

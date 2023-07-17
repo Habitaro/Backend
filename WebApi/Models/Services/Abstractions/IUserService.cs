@@ -1,4 +1,6 @@
-﻿namespace WebApi.Models.Services.Abstractions
+﻿using WebApi.Models.Contracts;
+
+namespace WebApi.Models.Services.Abstractions
 {
     public interface IUserService
     {
@@ -8,7 +10,7 @@
 
         UserModel? GetByEmail(string email);
 
-        void Create(UserModel model);
+        void Create(UserForCreationDto dtoModel);
 
         void Update(UserModel model);
 

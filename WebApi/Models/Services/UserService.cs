@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataAccess.Entities;
 using DataAccess.Repositories.Abstractions;
+using WebApi.Models.Contracts;
 using WebApi.Models.Services.Abstractions;
 
 namespace WebApi.Models.Services
@@ -17,14 +18,23 @@ namespace WebApi.Models.Services
             this._mapper = mapper;
         }
 
-        public void Create(UserModel model)
+        public void Create(UserForCreationDto dtoModel)
         {
-            var entity = _mapper.Map<UserModel, User>(model);
-            if (entity  != null) 
+            var model = new UserModel()
             {
-                _repositoryManager.UserRepository.Add(entity);
-                _repositoryManager.SaveChanges();
-            }
+                Username = dtoModel.Username,
+                Email = dtoModel.Email,
+                Password = dtoModel.Password,
+                Status = "",
+                AvatarId = 0,
+                RankId = 0,
+            };
+
+            var entity = _mapper.Map<UserModel, User>(model);
+
+            _repositoryManager.UserRepository.Add(entity);
+            _repositoryManager.SaveChanges();
+
         }
 
         public IEnumerable<UserModel> GetAll()

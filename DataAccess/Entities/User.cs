@@ -18,7 +18,7 @@ namespace DataAccess.Entities
 
         public int AvatarId { get; set; }
 
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
 
         public Rank Rank { get; set; }
 
