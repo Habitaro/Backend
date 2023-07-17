@@ -25,16 +25,16 @@ namespace WebApi.Models.Services
                 Username = dtoModel.Username,
                 Email = dtoModel.Email,
                 Password = dtoModel.Password,
+                Status = "",
                 AvatarId = 0,
                 RankId = 0,
             };
 
             var entity = _mapper.Map<UserModel, User>(model);
-            if (entity  != null) 
-            {
-                _repositoryManager.UserRepository.Add(entity);
-                _repositoryManager.SaveChanges();
-            }
+
+            _repositoryManager.UserRepository.Add(entity);
+            _repositoryManager.SaveChanges();
+
         }
 
         public IEnumerable<UserModel> GetAll()

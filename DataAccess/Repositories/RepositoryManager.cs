@@ -18,7 +18,7 @@ namespace DataAccess.Repositories
         {
             this.context = context;
             UserRepository = new UserRepository(context);
-            SeedData();
+            //SeedData();
         }
 
         public void SaveChanges()
