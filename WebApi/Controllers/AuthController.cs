@@ -22,8 +22,13 @@ namespace WebApi.Controllers
         [HttpPost("Register")]
         public IActionResult Register(UserForCreationDto model)
         {
-            serviceManager.UserService.Create(model);
-            return Ok();
+            if (ModelState.IsValid && model.Password == model.Password_Confirm) 
+            {
+                serviceManager.UserService.Create(model);
+                return Ok();
+            }
+
+            return BadRequest();
         }
 
         [HttpPost("Login")]
