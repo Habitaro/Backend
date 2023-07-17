@@ -22,6 +22,7 @@ namespace WebApi.Models.Services
         {
             var model = new UserModel()
             {
+                Id = _repositoryManager.UserRepository.GetAll().Last().Id + 1,
                 Username = dtoModel.Username,
                 Email = dtoModel.Email,
                 Password = dtoModel.Password,
