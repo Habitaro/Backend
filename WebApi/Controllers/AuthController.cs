@@ -22,13 +22,18 @@ namespace WebApi.Controllers
         [HttpPost("Register")]
         public IActionResult Register(UserForCreationDto model)
         {
-            if (ModelState.IsValid && model.Password == model.Password_Confirm) 
+            if (ModelState.IsValid) 
             {
+                if (serviceManager.UserService.GetByEmail(model.Email) != null)
+                {
+                    return BadRequest(error: "Email is already registered");
+                }
+
                 serviceManager.UserService.Create(model);
                 return Ok();
             }
 
-            return BadRequest();
+            return BadRequest(ModelState);
         }
 
         [HttpPost("Login")]

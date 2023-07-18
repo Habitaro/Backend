@@ -47,7 +47,7 @@ namespace DataAccess.Repositories
 
         public User? GetByEmail(string email)
         {
-            var user = context.Find<User>(email);
+            var user = context.Users.SingleOrDefault(u => u.Email == email);
             return user;
         }
     }
