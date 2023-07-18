@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using WebApi.Models;
 using WebApi.Models.Contracts;
 using WebApi.Models.Services.Abstractions;
@@ -20,6 +25,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("Register")]
+        [AllowAnonymous]
         public IActionResult Register(UserForCreationDto model)
         {
             if (ModelState.IsValid) 
@@ -30,7 +36,32 @@ namespace WebApi.Controllers
                 }
 
                 serviceManager.UserService.Create(model);
-                return Ok();
+
+                var userModel = serviceManager.UserService.GetByEmail(model.Email)!;
+
+                var issuer = configuration["Jwt:Issuer"];
+                var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]);
+                var tokenDescriptor = new SecurityTokenDescriptor()
+                {
+                    Subject = new ClaimsIdentity(new[]
+                    {
+                        new Claim("Id", userModel.Id.ToString()),
+                        new Claim(JwtRegisteredClaimNames.Name, userModel.Username),
+                        new Claim(JwtRegisteredClaimNames.Email, userModel.Email),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    }),
+                    Expires = DateTime.Now.AddMinutes(5),
+                    Issuer = issuer,
+                    Audience = issuer,
+                    SigningCredentials = new SigningCredentials
+                    (new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
+                };
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var stringToken = tokenHandler.WriteToken(token);
+
+                return Ok(stringToken);
             }
 
             return BadRequest(ModelState);
