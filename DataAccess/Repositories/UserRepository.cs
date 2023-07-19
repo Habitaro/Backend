@@ -30,13 +30,13 @@ namespace DataAccess.Repositories
 
         public IEnumerable<User> GetAll()
         {
-            var users = context.Users.Select(u => u).Include(u => u.Rank).ToList();
+            var users = context.Users.Include(u => u.Rank).ToList();
             return users;
         }
 
         public User? GetById(int id)
         {
-            var user = context.Find<User>(id);
+            var user = context.Users.Include(u => u.Rank).SingleOrDefault(u => u.Id == id);
             return user;
         }
 
@@ -47,7 +47,7 @@ namespace DataAccess.Repositories
 
         public User? GetByEmail(string email)
         {
-            var user = context.Users.SingleOrDefault(u => u.Email == email);
+            var user = context.Users.Include(u => u.Rank).SingleOrDefault(u => u.Email == email);
             return user;
         }
     }

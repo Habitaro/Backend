@@ -19,7 +19,6 @@ namespace DataAccess.Repositories
             this.context = context;
             UserRepository = new UserRepository(context);
             SeedData();
-            SaveChanges();
         }
 
         public void SaveChanges()
@@ -40,11 +39,14 @@ namespace DataAccess.Repositories
                         Username = $"User{i}",
                         Email = $"user{i}@gmail.com",
                         AvatarId = i,
-                        Password = $"userPassword{i}",
+                        PasswordHash = System.Text.Encoding.UTF8.GetBytes($"userPassword{i}"),
+                        PasswordSalt = System.Text.Encoding.UTF8.GetBytes("Aboba"),
                         RankId = i,
                         Status = "Sleepin",
                     });
                 }
+
+                SaveChanges();
             }
         }
     }

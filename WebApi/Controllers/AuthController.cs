@@ -50,13 +50,7 @@ namespace WebApi.Controllers
         [HttpPost("Login")]
         public IActionResult Login(UserModel model)
         {
-            var user = serviceManager.UserService.GetByEmail(model.Email);
-            if (user.Password == model.Password)
-            {
-                return Ok();
-            }
-
-            return BadRequest();
+            throw new NotImplementedException();
         }
 
         private string GenerateToken(UserModel model)
