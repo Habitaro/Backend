@@ -27,7 +27,7 @@ namespace WebApi.Models.Services
                 Password = dtoModel.Password,
                 Status = "",
                 AvatarId = 0,
-                RankId = 0,
+                RankId = 1,
             };
 
             var entity = _mapper.Map<UserModel, User>(model);

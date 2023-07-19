@@ -41,7 +41,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "JWTToken_Auth_API",
+        Title = "Habitaro_API",
         Version = "v1"
     });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -58,7 +58,7 @@ builder.Services.AddSwaggerGen(c =>
             new OpenApiSecurityScheme {
                 Reference = new OpenApiReference {
                     Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
+                    Id = "Bearer"
                 }
             },
             new string[] {}

@@ -39,29 +39,9 @@ namespace WebApi.Controllers
 
                 var userModel = serviceManager.UserService.GetByEmail(model.Email)!;
 
-                var issuer = configuration["Jwt:Issuer"];
-                var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]);
-                var tokenDescriptor = new SecurityTokenDescriptor()
-                {
-                    Subject = new ClaimsIdentity(new[]
-                    {
-                        new Claim("Id", userModel.Id.ToString()),
-                        new Claim(JwtRegisteredClaimNames.Name, userModel.Username),
-                        new Claim(JwtRegisteredClaimNames.Email, userModel.Email),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    }),
-                    Expires = DateTime.Now.AddMinutes(5),
-                    Issuer = issuer,
-                    Audience = issuer,
-                    SigningCredentials = new SigningCredentials
-                    (new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
-                };
+                var token = GenerateToken(userModel);
 
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                var stringToken = tokenHandler.WriteToken(token);
-
-                return Ok(stringToken);
+                return Ok(token);
             }
 
             return BadRequest(ModelState);
@@ -77,6 +57,33 @@ namespace WebApi.Controllers
             }
 
             return BadRequest();
+        }
+
+        private string GenerateToken(UserModel model)
+        {
+            var issuer = configuration["Jwt:Issuer"];
+            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]);
+            var tokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                        new Claim("Id", model.Id.ToString()),
+                        new Claim(JwtRegisteredClaimNames.Name, model.Username),
+                        new Claim(JwtRegisteredClaimNames.Email, model.Email),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    }),
+                Expires = DateTime.Now.AddMinutes(5),
+                Issuer = issuer,
+                Audience = issuer,
+                SigningCredentials = new SigningCredentials
+                (new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var stringToken = tokenHandler.WriteToken(token);
+
+            return stringToken;
         }
     }
 }
