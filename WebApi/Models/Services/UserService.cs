@@ -95,20 +95,13 @@ namespace WebApi.Models.Services
             }
         }
 
-        public bool ComparePassword(UserModel user, string password)
+        public bool VerifyPassword(UserModel user, string password)
         {
             using (var hmac = new HMACSHA512(user.PasswordSalt))
             {
-                var inputPasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
 
-                if (inputPasswordHash == user.PasswordHash)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return computedHash.SequenceEqual(user.PasswordHash);
             }
         }
     }
