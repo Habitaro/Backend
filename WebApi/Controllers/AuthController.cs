@@ -26,18 +26,18 @@ namespace WebApi.Controllers
 
         [HttpPost("Register")]
         [AllowAnonymous]
-        public IActionResult Register(UserForCreationDto model)
+        public IActionResult Register(UserForCreationDto creationDto)
         {
             if (ModelState.IsValid) 
             {
-                if (serviceManager.UserService.GetByEmail(model.Email) != null)
+                if (serviceManager.UserService.GetByEmail(creationDto.Email) != null)
                 {
                     return BadRequest(error: "Email is already registered");
                 }
 
-                serviceManager.UserService.Create(model);
+                serviceManager.UserService.Create(creationDto);
 
-                var userModel = serviceManager.UserService.GetByEmail(model.Email)!;
+                var userModel = serviceManager.UserService.GetByEmail(creationDto.Email)!;
 
                 var token = GenerateToken(userModel);
 
@@ -48,9 +48,30 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("Login")]
-        public IActionResult Login(UserModel model)
+        [AllowAnonymous]
+        public IActionResult Login(UserForLoginDto loginDto)
         {
-            throw new NotImplementedException();
+            if (ModelState.IsValid)
+            {
+                var user = serviceManager.UserService.GetByEmail(loginDto.Email);
+
+                if (user == null)
+                {
+                    return BadRequest("User not found");
+                }
+
+                if (serviceManager.UserService.ComparePassword(user, loginDto.Password))
+                {
+                    var token = GenerateToken(user);
+                    return Ok(token);
+                }
+                else
+                {
+                    return BadRequest("Invalid password");
+                }
+            }
+
+            return BadRequest(ModelState);
         }
 
         private string GenerateToken(UserModel model)
