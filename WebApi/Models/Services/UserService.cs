@@ -94,5 +94,15 @@ namespace WebApi.Models.Services
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
         }
+
+        public bool VerifyPassword(UserModel user, string password)
+        {
+            using (var hmac = new HMACSHA512(user.PasswordSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+
+                return computedHash.SequenceEqual(user.PasswordHash);
+            }
+        }
     }
 }

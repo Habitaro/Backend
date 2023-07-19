@@ -15,5 +15,6 @@ namespace WebApi.Models.Services.Abstractions
         void Update(UserModel model);
 
         void Remove(UserModel model);
+        bool VerifyPassword(UserModel user, string password);
     }
 }
