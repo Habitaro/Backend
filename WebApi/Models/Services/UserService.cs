@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataAccess.Entities;
 using DataAccess.Repositories.Abstractions;
+using System.Security.Cryptography;
 using WebApi.Models.Contracts;
 using WebApi.Models.Services.Abstractions;
 
@@ -20,14 +21,17 @@ namespace WebApi.Models.Services
 
         public void Create(UserForCreationDto dtoModel)
         {
+            CreatePasswordHash(dtoModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
             var model = new UserModel()
             {
                 Username = dtoModel.Username,
                 Email = dtoModel.Email,
-                Password = dtoModel.Password,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
                 Status = "",
                 AvatarId = 0,
-                RankId = 0,
+                RankId = 1,
             };
 
             var entity = _mapper.Map<UserModel, User>(model);
@@ -80,6 +84,15 @@ namespace WebApi.Models.Services
             var entity = _mapper.Map<UserModel, User>(model);
             _repositoryManager.UserRepository.Update(entity);
             _repositoryManager.SaveChanges();
+        }
+
+        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
         }
     }
 }
