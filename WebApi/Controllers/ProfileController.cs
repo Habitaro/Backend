@@ -21,6 +21,16 @@ namespace WebApi.Controllers
             this.configuration = configuration;
         }
 
+        [HttpGet]
+        [Authorize]
+        public ActionResult<UserModel> Get()
+        {
+            var Id = int.Parse(User.FindFirstValue("Id"));
+            var userModel = serviceManager.UserService.GetById(Id);
+
+            return Ok(userModel);
+        }
+
         [HttpGet("All")]
         [Authorize]
         public ActionResult<IEnumerable<UserModel>> GetAllUsers()
@@ -52,6 +62,20 @@ namespace WebApi.Controllers
             {
                 var authorizedId = User.FindFirstValue("Id");
                 serviceManager.UserService.Update(editDto, int.Parse(authorizedId));
+
+                return Ok();
+            }
+
+            return BadRequest(ModelState);
+        }
+
+        [HttpPatch("{id}")]
+        [Authorize]
+        public ActionResult Update([FromBody] UserForEditDto dtoModel, int id)
+        {
+            if (ModelState.IsValid)
+            {
+                serviceManager.UserService.Update(dtoModel, id);
 
                 return Ok();
             }
