@@ -10,7 +10,8 @@ namespace WebApi.Models.Services
             CreateMap<User, UserModel>()
                 .ForMember(um => um.Rank, u => u.MapFrom(u => u.Rank.Name));
 
-            CreateMap<UserModel, User>();
+            CreateMap<UserModel, User>()
+                .ForMember(u => u.Rank, um => um.Ignore());
         }
     }
 }

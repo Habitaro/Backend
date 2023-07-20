@@ -12,7 +12,7 @@ namespace WebApi.Models.Services.Abstractions
 
         void Create(UserForCreationDto dtoModel);
 
-        void Update(UserModel model);
+        void Update(UserForEditDto dtoModel, int id);
 
         void Remove(UserModel model);
         bool VerifyPassword(UserModel user, string password);

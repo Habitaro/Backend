@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebApi.Models;
+using WebApi.Models.Contracts;
 using WebApi.Models.Services.Abstractions;
 
 namespace WebApi.Controllers
@@ -21,6 +23,16 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [Authorize]
+        public ActionResult<UserModel> Get()
+        {
+            var Id = int.Parse(User.FindFirstValue("Id"));
+            var userModel = serviceManager.UserService.GetById(Id);
+
+            return Ok(userModel);
+        }
+
+        [HttpGet("All")]
+        [Authorize]
         public ActionResult<IEnumerable<UserModel>> GetAllUsers()
         {
             var users = serviceManager.UserService.GetAll();
@@ -28,10 +40,47 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<UserModel> GetById(int id)
         {
-            var user = serviceManager.UserService.GetById(id);
-            return Ok(user);
+            var authorizedId = User.FindFirstValue("Id");
+
+            if (id.ToString() != authorizedId)
+            {
+                return Unauthorized();
+            }
+
+            var userModel = serviceManager.UserService.GetById(id);
+            return Ok(userModel);
+        }
+
+        [HttpPatch]
+        [Authorize]
+        public ActionResult Update(UserForEditDto editDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var authorizedId = User.FindFirstValue("Id");
+                serviceManager.UserService.Update(editDto, int.Parse(authorizedId));
+
+                return Ok();
+            }
+
+            return BadRequest(ModelState);
+        }
+
+        [HttpPatch("{id}")]
+        [Authorize]
+        public ActionResult Update([FromBody] UserForEditDto dtoModel, int id)
+        {
+            if (ModelState.IsValid)
+            {
+                serviceManager.UserService.Update(dtoModel, id);
+
+                return Ok();
+            }
+
+            return BadRequest(ModelState);
         }
     }
 }
