@@ -79,9 +79,22 @@ namespace WebApi.Models.Services
             _repositoryManager.SaveChanges();
         }
 
-        public void Update(UserModel model)
+        public void Update(UserForEditDto dtoModel, int id)
         {
-            var entity = _mapper.Map<UserModel, User>(model);
+            var userModel = GetById(id);
+            userModel.AvatarId = dtoModel.AvatarId ?? userModel.AvatarId;
+            userModel.Status = dtoModel.Status ?? userModel.Status;
+            userModel.Username = dtoModel.Username ?? userModel.Username;
+
+            if (dtoModel.Password != null)
+            {
+                CreatePasswordHash(dtoModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
+                userModel.PasswordHash = passwordHash;
+                userModel.PasswordSalt = passwordSalt;
+            }
+
+            var entity = _mapper.Map<User>(userModel);
+
             _repositoryManager.UserRepository.Update(entity);
             _repositoryManager.SaveChanges();
         }

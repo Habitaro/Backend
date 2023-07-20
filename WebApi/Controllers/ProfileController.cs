@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebApi.Models;
 using WebApi.Models.Services.Abstractions;
 
@@ -19,7 +20,7 @@ namespace WebApi.Controllers
             this.configuration = configuration;
         }
 
-        [HttpGet]
+        [HttpGet("All")]
         [Authorize]
         public ActionResult<IEnumerable<UserModel>> GetAllUsers()
         {
@@ -28,10 +29,18 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<UserModel> GetById(int id)
         {
-            var user = serviceManager.UserService.GetById(id);
-            return Ok(user);
+            var authorizedId = User.FindFirstValue("Id");
+
+            if (id.ToString() != authorizedId)
+            {
+                return Unauthorized();
+            }
+
+            var userModel = serviceManager.UserService.GetById(id);
+            return Ok(userModel);
         }
     }
 }
