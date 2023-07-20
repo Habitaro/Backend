@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebApi.Models;
+using WebApi.Models.Contracts;
 using WebApi.Models.Services.Abstractions;
 
 namespace WebApi.Controllers
@@ -41,6 +42,21 @@ namespace WebApi.Controllers
 
             var userModel = serviceManager.UserService.GetById(id);
             return Ok(userModel);
+        }
+
+        [HttpPatch]
+        [Authorize]
+        public ActionResult Update(UserForEditDto editDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var authorizedId = User.FindFirstValue("Id");
+                serviceManager.UserService.Update(editDto, int.Parse(authorizedId));
+
+                return Ok();
+            }
+
+            return BadRequest(ModelState);
         }
     }
 }
