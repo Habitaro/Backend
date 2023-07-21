@@ -79,6 +79,13 @@ namespace WebApi.Models.Services
             _repositoryManager.SaveChanges();
         }
 
+        public void RemoveById(int id)
+        {
+            var entity = _repositoryManager.UserRepository.GetById(id) ?? throw new ArgumentNullException(nameof(id));
+            _repositoryManager.UserRepository.Delete(entity);
+            _repositoryManager.SaveChanges();
+        }
+
         public void Update(UserForEditDto dtoModel, int id)
         {
             var user = _repositoryManager.UserRepository.GetById(id)!;

@@ -15,6 +15,9 @@ namespace WebApi.Models.Services.Abstractions
         void Update(UserForEditDto dtoModel, int id);
 
         void Remove(UserModel model);
+
+        void RemoveById(int id);
+
         bool VerifyPassword(UserModel user, string password);
     }
 }

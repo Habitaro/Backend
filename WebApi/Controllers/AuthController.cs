@@ -14,7 +14,6 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
     [SwaggerTag("Authentication")]
     public class AuthController : ControllerBase
     {
@@ -28,6 +27,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("Register")]
+        [AllowAnonymous]
         [SwaggerOperation(Summary ="Registration", 
             Description ="Require valid user info: username(length = 2..16, allowed letters and digits)," +
             " valid email, password(length = 8..20, at least one lower-, uppercase, digit and special " +
@@ -56,6 +56,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("Login")]
+        [AllowAnonymous]
         [SwaggerOperation(Summary ="Log in", Description ="Require valid email and password. Returns JWT")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -97,7 +98,7 @@ namespace WebApi.Controllers
                         new Claim(JwtRegisteredClaimNames.Email, model.Email),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     }),
-                Expires = DateTime.Now.AddMinutes(5),
+                Expires = DateTime.Now.AddMinutes(20),
                 Issuer = issuer,
                 Audience = issuer,
                 SigningCredentials = new SigningCredentials
