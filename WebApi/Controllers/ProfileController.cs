@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
 using WebApi.Models;
 using WebApi.Models.Contracts;
@@ -24,6 +26,8 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [Authorize]
+        [SwaggerOperation(Summary ="Get current user profile data")]
+        [ProducesResponseType(typeof(UserModel), StatusCodes.Status200OK)]
         public ActionResult<UserModel> Get()
         {
             var Id = int.Parse(User.FindFirstValue("Id"));
@@ -34,6 +38,8 @@ namespace WebApi.Controllers
 
         [HttpGet("All")]
         [Authorize]
+        [SwaggerOperation(Summary ="Get all users profile data")]
+        [ProducesResponseType(typeof(UserModel), StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<UserModel>> GetAllUsers()
         {
             var users = serviceManager.UserService.GetAll();
@@ -42,21 +48,24 @@ namespace WebApi.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
+        [SwaggerOperation(Summary ="Get users profile data by Id")]
+        [ProducesResponseType(typeof(UserModel), StatusCodes.Status200OK)]
         public ActionResult<UserModel> GetById(int id)
         {
-            var authorizedId = User.FindFirstValue("Id");
+            var userModel = serviceManager.UserService.GetById(id);
 
-            if (id.ToString() != authorizedId)
+            if (userModel != null)
             {
-                return Unauthorized();
+                return Ok(userModel);
             }
 
-            var userModel = serviceManager.UserService.GetById(id);
-            return Ok(userModel);
+            return NotFound($"User with id {id} was not found");
         }
 
         [HttpPatch]
         [Authorize]
+        [SwaggerOperation(Summary ="Update current user`s data")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult Update(UserForEditDto editDto)
         {
             if (ModelState.IsValid)
@@ -64,7 +73,7 @@ namespace WebApi.Controllers
                 var authorizedId = User.FindFirstValue("Id");
                 serviceManager.UserService.Update(editDto, int.Parse(authorizedId));
 
-                return Ok();
+                return NoContent();
             }
 
             return BadRequest(ModelState);
@@ -72,6 +81,8 @@ namespace WebApi.Controllers
 
         [HttpPatch("{id}")]
         [Authorize]
+        [SwaggerOperation(Summary = "Update user`s data by Id")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult Update([FromBody] UserForEditDto dtoModel, int id)
         {
             if (ModelState.IsValid)
@@ -86,6 +97,8 @@ namespace WebApi.Controllers
 
         [HttpDelete]
         [Authorize]
+        [SwaggerOperation(Summary ="Remove current user`s profile")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult Remove()
         {
             var userId = int.Parse(User.FindFirstValue("Id"));
@@ -103,6 +116,8 @@ namespace WebApi.Controllers
 
         [HttpDelete("{id}")]
         [Authorize]
+        [SwaggerOperation(Summary = "Remove user`s profile by Id")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult Delete(int id)
         {
             try
