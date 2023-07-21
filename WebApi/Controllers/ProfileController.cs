@@ -89,8 +89,14 @@ namespace WebApi.Controllers
         public ActionResult Remove()
         {
             var userId = int.Parse(User.FindFirstValue("Id"));
-            var user = serviceManager.UserService.GetById(userId);
-            serviceManager.UserService.Remove(user);
+            try
+            {
+                serviceManager.UserService.RemoveById(userId);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"User with Id {userId} was not found");
+            }
 
             return NoContent();
         }
