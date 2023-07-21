@@ -97,7 +97,7 @@ namespace WebApi.Controllers
                         new Claim(JwtRegisteredClaimNames.Email, model.Email),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     }),
-                Expires = DateTime.Now.AddMinutes(5),
+                Expires = DateTime.Now.AddMinutes(20),
                 Issuer = issuer,
                 Audience = issuer,
                 SigningCredentials = new SigningCredentials

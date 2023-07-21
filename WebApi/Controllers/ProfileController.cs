@@ -99,8 +99,14 @@ namespace WebApi.Controllers
         [Authorize]
         public ActionResult Delete(int id)
         {
-            var user = serviceManager.UserService.GetById(userId);
-            serviceManager.UserService.Remove(user);
+            try
+            {
+                serviceManager.UserService.RemoveById(id);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"User with Id {id} was not found");
+            }
 
             return NoContent();
         }
