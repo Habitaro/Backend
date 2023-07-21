@@ -86,13 +86,6 @@ namespace WebApi.Models.Services
             user.Status = dtoModel.Status ?? user.Status;
             user.Username = dtoModel.Username ?? user.Username;
 
-            if (dtoModel.Password != null)
-            {
-                CreatePasswordHash(dtoModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
-            }
-
             _repositoryManager.UserRepository.Update(user);
             _repositoryManager.SaveChanges();
         }
