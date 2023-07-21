@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DataAccess.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -81,6 +82,27 @@ namespace WebApi.Controllers
             }
 
             return BadRequest(ModelState);
+        }
+
+        [HttpDelete]
+        [Authorize]
+        public ActionResult Remove()
+        {
+            var userId = int.Parse(User.FindFirstValue("Id"));
+            var user = serviceManager.UserService.GetById(userId);
+            serviceManager.UserService.Remove(user);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public ActionResult Delete(int id)
+        {
+            var user = serviceManager.UserService.GetById(userId);
+            serviceManager.UserService.Remove(user);
+
+            return NoContent();
         }
     }
 }
