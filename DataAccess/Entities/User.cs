@@ -22,6 +22,10 @@ namespace DataAccess.Entities
 
         public string Status { get; set; } = string.Empty;
 
+        public int CurrentExp { get; set; }
+
+        public int RequiredExp { get; set; }
+
         public Rank Rank { get; set; }
 
         public int RankId { get; set; }

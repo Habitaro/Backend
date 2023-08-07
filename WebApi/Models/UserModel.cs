@@ -19,6 +19,10 @@ namespace WebApi.Models
 
         public string Status { get; set; }
 
+        public int CurrentExp { get; set; }
+
+        public int RequiredExp { get; set; }
+
         public int RankId { get; set; }
 
         public string Rank { get; set; }
