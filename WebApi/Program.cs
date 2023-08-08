@@ -13,7 +13,10 @@ using WebApi.Models.Services.Abstractions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<HabitaroDbContext>(opt => opt.UseInMemoryDatabase(databaseName: "HabitaroDb"));
+builder.Services.AddDbContext<HabitaroDbContext>(opt => 
+    { 
+        opt.UseSqlServer(builder.Configuration.GetConnectionString("HabitaroDb"));
+    });
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<HabitaroMapProfile>());
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

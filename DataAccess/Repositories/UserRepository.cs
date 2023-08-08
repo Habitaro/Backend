@@ -11,46 +11,43 @@ namespace DataAccess.Repositories
 {
     internal class UserRepository : IUserRepository
     {
-        private readonly HabitaroDbContext context;
+        private readonly HabitaroDbContext _context;
 
         public UserRepository(HabitaroDbContext context)
         {
-            this.context = context;
+            _context = context;
         }
 
         public void Delete(User user)
         {
-            context.Users.Remove(user);
+            _context.Users.Remove(user);
         }
         
         public void Add(User user) 
         {
-            context.Users.Add(user);
+            _context.Users.Add(user);
         }
 
         public IEnumerable<User> GetAll()
         {
-            //var users = context.Users.Include(u => u.Rank).ToList();
-            var users = context.Users.ToList();
+            var users = _context.Users.Include(u => u.Rank).ToList();
             return users;
         }
 
         public User? GetById(int id)
         {
-            //var user = context.Users.Include(u => u.Rank).SingleOrDefault(u => u.Id == id);
-            var user = context.Users.SingleOrDefault(u => u.Id == id);
+            var user = _context.Users.Include(u => u.Rank).SingleOrDefault(u => u.Id == id);
             return user;
         }
 
         public void Update(User user)
         {
-            context.Users.Update(user);
+            _context.Users.Update(user);
         }
 
         public User? GetByEmail(string email)
         {
-            //var user = context.Users.Include(u => u.Rank).SingleOrDefault(u => u.Email == email);
-            var user = context.Users.SingleOrDefault(u => u.Email == email);
+            var user = _context.Users.Include(u => u.Rank).SingleOrDefault(u => u.Email == email);
             return user;
         }
     }
