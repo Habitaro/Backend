@@ -17,13 +17,13 @@ namespace WebApi.Controllers
     [SwaggerTag("Authentication")]
     public class AuthController : ControllerBase
     {
-        private readonly IServiceManager serviceManager;
-        private readonly IConfiguration configuration;
+        private readonly IUnitOfWork _unit;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(IServiceManager serviceManager, IConfiguration configuration)
+        public AuthController(IUnitOfWork serviceManager, IConfiguration configuration)
         {
-            this.serviceManager = serviceManager;
-            this.configuration = configuration;
+            this._unit = serviceManager;
+            this._configuration = configuration;
         }
 
         [HttpPost("Register")]
@@ -38,14 +38,14 @@ namespace WebApi.Controllers
         {
             if (ModelState.IsValid) 
             {
-                if (serviceManager.UserService.GetByEmail(creationDto.Email) != null)
+                if (_unit.UserService.GetByEmail(creationDto.Email) != null)
                 {
                     return BadRequest(error: "Email is already registered");
                 }
 
-                serviceManager.UserService.Create(creationDto, configuration["PasswordPepper"]);
+                _unit.UserService.Create(creationDto, _configuration["PasswordPepper"]);
 
-                var userModel = serviceManager.UserService.GetByEmail(creationDto.Email)!;
+                var userModel = _unit.UserService.GetByEmail(creationDto.Email)!;
 
                 var token = GenerateToken(userModel);
 
@@ -64,14 +64,14 @@ namespace WebApi.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = serviceManager.UserService.GetByEmail(loginDto.Email);
+                var user = _unit.UserService.GetByEmail(loginDto.Email);
 
                 if (user == null)
                 {
                     return BadRequest("User not found");
                 }
 
-                if (serviceManager.UserService.VerifyPassword(user, loginDto.Password, configuration["PasswordPepper"]))
+                if (_unit.UserService.VerifyPassword(user, loginDto.Password, _configuration["PasswordPepper"]))
                 {
                     var token = GenerateToken(user);
                     return Ok(token);
@@ -87,8 +87,8 @@ namespace WebApi.Controllers
 
         private string GenerateToken(UserModel model)
         {
-            var issuer = configuration["Jwt:Issuer"];
-            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]);
+            var issuer = _configuration["Jwt:Issuer"];
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(new[]

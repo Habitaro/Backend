@@ -15,13 +15,13 @@ namespace WebApi.Controllers
     [ApiController]
     public class ProfileController : ControllerBase
     {
-        private readonly IServiceManager serviceManager;
-        private readonly IConfiguration configuration;
+        private readonly IUnitOfWork _unit;
+        private readonly IConfiguration _configuration;
 
-        public ProfileController(IServiceManager serviceManager, IConfiguration configuration)
+        public ProfileController(IUnitOfWork serviceManager, IConfiguration configuration)
         {
-            this.serviceManager = serviceManager;
-            this.configuration = configuration;
+            _unit = serviceManager;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -31,7 +31,7 @@ namespace WebApi.Controllers
         public ActionResult<UserModel> Get()
         {
             var Id = int.Parse(User.FindFirstValue("Id"));
-            var userModel = serviceManager.UserService.GetById(Id);
+            var userModel = _unit.UserService.GetById(Id);
 
             return Ok(userModel);
         }
@@ -42,7 +42,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(typeof(UserModel), StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<UserModel>> GetAllUsers()
         {
-            var users = serviceManager.UserService.GetAll();
+            var users = _unit.UserService.GetAll();
             return Ok(users);
         }
 
@@ -52,7 +52,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(typeof(UserModel), StatusCodes.Status200OK)]
         public ActionResult<UserModel> GetById(int id)
         {
-            var userModel = serviceManager.UserService.GetById(id);
+            var userModel = _unit.UserService.GetById(id);
 
             if (userModel != null)
             {
@@ -71,7 +71,7 @@ namespace WebApi.Controllers
             if (ModelState.IsValid)
             {
                 var authorizedId = User.FindFirstValue("Id");
-                serviceManager.UserService.Update(editDto, int.Parse(authorizedId));
+                _unit.UserService.Update(editDto, int.Parse(authorizedId));
 
                 return NoContent();
             }
@@ -87,7 +87,7 @@ namespace WebApi.Controllers
         {
             if (ModelState.IsValid)
             {
-                serviceManager.UserService.Update(dtoModel, id);
+                _unit.UserService.Update(dtoModel, id);
 
                 return Ok();
             }
@@ -104,7 +104,7 @@ namespace WebApi.Controllers
             var userId = int.Parse(User.FindFirstValue("Id"));
             try
             {
-                serviceManager.UserService.RemoveById(userId);
+                _unit.UserService.RemoveById(userId);
             }
             catch (ArgumentNullException)
             {
@@ -122,7 +122,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                serviceManager.UserService.RemoveById(id);
+                _unit.UserService.RemoveById(id);
             }
             catch (ArgumentNullException)
             {

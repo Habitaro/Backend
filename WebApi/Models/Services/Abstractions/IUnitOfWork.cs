@@ -1,6 +1,6 @@
 ﻿namespace WebApi.Models.Services.Abstractions
 {
-    public interface IServiceManager
+    public interface IUnitOfWork
     {
         IUserService UserService { get; }
     }

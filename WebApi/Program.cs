@@ -16,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<HabitaroDbContext>(opt => opt.UseInMemoryDatabase(databaseName: "HabitaroDb"));
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<HabitaroMapProfile>());
-builder.Services.AddScoped<IServiceManager, ServiceManager>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
