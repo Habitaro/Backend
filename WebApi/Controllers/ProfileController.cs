@@ -13,6 +13,7 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [SwaggerTag("Profile data")]
     public class ProfileController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
@@ -25,18 +26,6 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Authorize]
-        [SwaggerOperation(Summary ="Get current user profile data")]
-        [ProducesResponseType(typeof(UserModel), StatusCodes.Status200OK)]
-        public ActionResult<UserModel> Get()
-        {
-            var Id = int.Parse(User.FindFirstValue("Id"));
-            var userModel = _unit.UserService.GetById(Id);
-
-            return Ok(userModel);
-        }
-
-        [HttpGet("All")]
         [Authorize]
         [SwaggerOperation(Summary ="Get all users profile data")]
         [ProducesResponseType(typeof(UserModel), StatusCodes.Status200OK)]
@@ -62,23 +51,6 @@ namespace WebApi.Controllers
             return NotFound($"User with id {id} was not found");
         }
 
-        [HttpPatch]
-        [Authorize]
-        [SwaggerOperation(Summary ="Update current user`s data")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult Update(UserForEditDto editDto)
-        {
-            if (ModelState.IsValid)
-            {
-                var authorizedId = User.FindFirstValue("Id");
-                _unit.UserService.Update(editDto, int.Parse(authorizedId));
-
-                return NoContent();
-            }
-
-            return BadRequest(ModelState);
-        }
-
         [HttpPatch("{id}")]
         [Authorize]
         [SwaggerOperation(Summary = "Update user`s data by Id")]
@@ -89,29 +61,10 @@ namespace WebApi.Controllers
             {
                 _unit.UserService.Update(dtoModel, id);
 
-                return Ok();
+                return NoContent();
             }
 
             return BadRequest(ModelState);
-        }
-
-        [HttpDelete]
-        [Authorize]
-        [SwaggerOperation(Summary ="Remove current user`s profile")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult Remove()
-        {
-            var userId = int.Parse(User.FindFirstValue("Id"));
-            try
-            {
-                _unit.UserService.RemoveById(userId);
-            }
-            catch (ArgumentNullException)
-            {
-                return NotFound($"User with Id {userId} was not found");
-            }
-
-            return NoContent();
         }
 
         [HttpDelete("{id}")]
