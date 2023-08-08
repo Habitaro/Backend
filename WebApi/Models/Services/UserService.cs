@@ -140,6 +140,7 @@ namespace WebApi.Models.Services
             {
                 entity.CurrentExp -= entity.RequiredExp;
                 entity.RequiredExp = (int)(entity.RequiredExp * 1.5);
+                entity.RequiredExp -= entity.RequiredExp % 10;
             }
 
             _repositoryManager.SaveChanges();
