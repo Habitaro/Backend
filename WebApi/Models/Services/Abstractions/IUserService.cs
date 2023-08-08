@@ -18,6 +18,8 @@ namespace WebApi.Models.Services.Abstractions
 
         void RemoveById(int id);
 
-        bool VerifyPassword(UserModel user, string password, string pepper);
+        bool VerifyPassword(UserModel model, string password, string pepper);
+
+        void AddExp(UserModel model, int exp);
     }
 }

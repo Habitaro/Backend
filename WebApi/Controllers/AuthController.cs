@@ -30,8 +30,7 @@ namespace WebApi.Controllers
         [AllowAnonymous]
         [SwaggerOperation(Summary ="Registration", 
             Description ="Require valid user info: username(length = 2..16, allowed letters and digits)," +
-            " valid email, password(length = 8..20, at least one lower-, uppercase, digit and special " +
-            @"symbol{/,*,-,+, $, #, @, %, &}). Returns JWT")]
+            " valid email, password(length = 8..20, at least one lower-, uppercase and digit). Return JWT")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<string> Register(UserForCreationDto creationDto)

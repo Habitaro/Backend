@@ -36,6 +36,7 @@ namespace WebApi.Models.Services
                 Status = "",
                 AvatarId = 0,
                 RankId = 1,
+                RequiredExp = 1000,
             };
 
             var entity = _mapper.Map<UserModel, User>(model);
@@ -114,12 +115,12 @@ namespace WebApi.Models.Services
             return ComputeHash(hash, salt, pepper, iterations - 1);
         }
 
-        public bool VerifyPassword(UserModel user, string password, string pepper)
+        public bool VerifyPassword(UserModel model, string password, string pepper)
         {
 
-            var computedHash = ComputeHash(password, user.PasswordSalt, pepper, _iterations);
+            var computedHash = ComputeHash(password, model.PasswordSalt, pepper, _iterations);
 
-            return user.PasswordHash.SequenceEqual(computedHash);
+            return model.PasswordHash.SequenceEqual(computedHash);
         }
 
         private static string GenerateSalt()
@@ -128,6 +129,20 @@ namespace WebApi.Models.Services
             var byteSalt = new byte[16];
             rng.GetBytes(byteSalt);
             return Convert.ToBase64String(byteSalt);
+        }
+
+        public void AddExp(UserModel model, int exp)
+        {
+            var entity = _repositoryManager.UserRepository.GetById(model.Id) ?? throw new ArgumentNullException(nameof(model));
+            entity.CurrentExp += exp;
+
+            if ((entity.CurrentExp >= entity.RequiredExp) && entity.RankId < 8)
+            {
+                entity.CurrentExp -= entity.RequiredExp;
+                entity.RequiredExp = (int)(entity.RequiredExp * 1.5);
+            }
+
+            _repositoryManager.SaveChanges();
         }
     }
 }
