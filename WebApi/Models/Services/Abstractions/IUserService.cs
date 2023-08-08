@@ -10,7 +10,7 @@ namespace WebApi.Models.Services.Abstractions
 
         UserModel? GetByEmail(string email);
 
-        void Create(UserForCreationDto dtoModel);
+        void Create(UserForCreationDto dtoModel, string pepper);
 
         void Update(UserForEditDto dtoModel, int id);
 
@@ -18,6 +18,6 @@ namespace WebApi.Models.Services.Abstractions
 
         void RemoveById(int id);
 
-        bool VerifyPassword(UserModel user, string password);
+        bool VerifyPassword(UserModel user, string password, string pepper);
     }
 }

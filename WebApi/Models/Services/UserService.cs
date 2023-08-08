@@ -14,22 +14,25 @@ namespace WebApi.Models.Services
 
         private readonly IMapper _mapper;
 
+        private const int _iterations = 3;
+
         public UserService(IRepositoryManager manager, IMapper mapper)
         {
             _repositoryManager = manager;
             _mapper = mapper;
         }
 
-        public void Create(UserForCreationDto dtoModel)
+        public void Create(UserForCreationDto dtoModel, string pepper)
         {
-            CreatePasswordHash(dtoModel.Password, out string passwordHash, out string passwordSalt);
+            var salt = GenerateSalt();
+            var passwordHash = ComputeHash(dtoModel.Password, salt, pepper, _iterations);
 
             var model = new UserModel()
             {
                 Username = dtoModel.Username,
                 Email = dtoModel.Email,
                 PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt,
+                PasswordSalt = salt,
                 Status = "",
                 AvatarId = 0,
                 RankId = 1,
@@ -98,24 +101,33 @@ namespace WebApi.Models.Services
             _repositoryManager.SaveChanges();
         }
 
-        private static void CreatePasswordHash(string password, out string passwordHash, out string passwordSalt)
+        private static string ComputeHash(string password, string salt, string pepper, int iterations)
         {
-            using (var hmac = new HMACSHA512())
-            {
-                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-                passwordSalt = Convert.ToBase64String(hmac.Key);
-                passwordHash = Convert.ToBase64String(computedHash);
-            }
+            if (iterations <= 0) return password;
+
+            using var hmac = SHA256.Create();
+
+            var passwordSaltPepper = $"{password}{salt}{pepper}";
+            var byteValue = Encoding.UTF8.GetBytes(passwordSaltPepper);
+            var byteHash = hmac.ComputeHash(byteValue);
+            var hash = Convert.ToBase64String(byteHash);
+            return ComputeHash(hash, salt, pepper, iterations - 1);
         }
 
-        public bool VerifyPassword(UserModel user, string password)
+        public bool VerifyPassword(UserModel user, string password, string pepper)
         {
-            using (var hmac = new HMACSHA512(Encoding.UTF8.GetBytes(user.PasswordSalt)))
-            {
-                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
 
-                return user.PasswordHash == Convert.ToBase64String(computedHash);
-            }
+            var computedHash = ComputeHash(password, user.PasswordSalt, pepper, _iterations);
+
+            return user.PasswordHash.SequenceEqual(computedHash);
+        }
+
+        private static string GenerateSalt()
+        {
+            var rng = RandomNumberGenerator.Create();
+            var byteSalt = new byte[16];
+            rng.GetBytes(byteSalt);
+            return Convert.ToBase64String(byteSalt);
         }
     }
 }

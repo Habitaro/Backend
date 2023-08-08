@@ -43,7 +43,7 @@ namespace WebApi.Controllers
                     return BadRequest(error: "Email is already registered");
                 }
 
-                serviceManager.UserService.Create(creationDto);
+                serviceManager.UserService.Create(creationDto, configuration["PasswordPepper"]);
 
                 var userModel = serviceManager.UserService.GetByEmail(creationDto.Email)!;
 
@@ -71,7 +71,7 @@ namespace WebApi.Controllers
                     return BadRequest("User not found");
                 }
 
-                if (serviceManager.UserService.VerifyPassword(user, loginDto.Password))
+                if (serviceManager.UserService.VerifyPassword(user, loginDto.Password, configuration["PasswordPepper"]))
                 {
                     var token = GenerateToken(user);
                     return Ok(token);
