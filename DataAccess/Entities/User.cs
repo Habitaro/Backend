@@ -10,24 +10,24 @@ namespace DataAccess.Entities
     {
         public int Id { get; set; }
 
-        public string Username { get; set; }
+        public string Username { get; set; } = "";
 
-        public string Email { get; set; }
+        public string Email { get; set; } = "";
 
-        public byte[] PasswordHash { get; set; }
+        public string PasswordHash { get; set; }
 
-        public byte[] PasswordSalt { get; set; }
+        public string PasswordSalt { get; set; }
 
         public int AvatarId { get; set; }
 
-        public string Status { get; set; } = string.Empty;
+        public string Status { get; set; } = "";
 
         public int CurrentExp { get; set; }
 
         public int RequiredExp { get; set; }
 
-        public Rank Rank { get; set; }
-
         public int RankId { get; set; }
+
+        public Rank Rank { get; set; }
     }
 }

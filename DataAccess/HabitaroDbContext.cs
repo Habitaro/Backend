@@ -19,23 +19,8 @@ namespace DataAccess
 
         public DbSet<Rank> Ranks { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseInMemoryDatabase(databaseName: "HabitaroDb");
-            base.OnConfiguring(optionsBuilder);
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .HasKey(u => u.Id);
-
-            modelBuilder.Entity<Rank>()
-                .HasKey(r => r.Id);
-
-            modelBuilder.Entity<User>()
-                .HasOne<Rank>().WithMany(r => r.Users).HasForeignKey(u => u.RankId);
-
             modelBuilder.Entity<Rank>().HasData(new Rank()
             {
                 Id = 1,
@@ -60,6 +45,18 @@ namespace DataAccess
             {
                 Id = 6,
                 Name = "Silver cat 3",
+            }, new Rank()
+            {
+                Id = 7,
+                Name = "Gold cat 1",
+            }, new Rank()
+            {
+                Id = 8,
+                Name = "Gold cat 2",
+            }, new Rank()
+            {
+                Id = 9,
+                Name = "Gold cat 3"
             });
 
             base.OnModelCreating(modelBuilder);

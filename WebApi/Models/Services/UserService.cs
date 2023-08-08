@@ -2,6 +2,7 @@
 using DataAccess.Entities;
 using DataAccess.Repositories.Abstractions;
 using System.Security.Cryptography;
+using System.Text;
 using WebApi.Models.Contracts;
 using WebApi.Models.Services.Abstractions;
 
@@ -15,13 +16,13 @@ namespace WebApi.Models.Services
 
         public UserService(IRepositoryManager manager, IMapper mapper)
         {
-            this._repositoryManager = manager;
-            this._mapper = mapper;
+            _repositoryManager = manager;
+            _mapper = mapper;
         }
 
         public void Create(UserForCreationDto dtoModel)
         {
-            CreatePasswordHash(dtoModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            CreatePasswordHash(dtoModel.Password, out string passwordHash, out string passwordSalt);
 
             var model = new UserModel()
             {
@@ -97,22 +98,23 @@ namespace WebApi.Models.Services
             _repositoryManager.SaveChanges();
         }
 
-        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        private static void CreatePasswordHash(string password, out string passwordHash, out string passwordSalt)
         {
             using (var hmac = new HMACSHA512())
             {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                passwordSalt = Convert.ToBase64String(hmac.Key);
+                passwordHash = Convert.ToBase64String(computedHash);
             }
         }
 
         public bool VerifyPassword(UserModel user, string password)
         {
-            using (var hmac = new HMACSHA512(user.PasswordSalt))
+            using (var hmac = new HMACSHA512(Encoding.UTF8.GetBytes(user.PasswordSalt)))
             {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
 
-                return computedHash.SequenceEqual(user.PasswordHash);
+                return user.PasswordHash == Convert.ToBase64String(computedHash);
             }
         }
     }
