@@ -4,6 +4,8 @@ using DataAccess;
 using WebApi.Models.Services.Abstractions;
 using WebApi.Models.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Filters;
+using WebApi.Startup.Filters;
 
 namespace WebApi.Startup
 {
@@ -18,6 +20,7 @@ namespace WebApi.Startup
             services.AddScoped<IRepositoryManager, RepositoryManager>();
             services.AddAutoMapper(cfg => cfg.AddProfile<HabitaroMapProfile>());
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<GlobalExceptionFilter>();
 
             return services;
         }

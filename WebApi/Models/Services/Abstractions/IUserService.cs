@@ -6,15 +6,15 @@ namespace WebApi.Models.Services.Abstractions
     {
         Task<IEnumerable<UserReadDto>> GetAllAsDto();
 
-        Task<UserReadDto?> GetByIdAsDto(int id);
+        Task<UserReadDto> GetByIdAsDto(int id);
 
-        Task<UserReadDto?> GetByEmailAsDto(string email);
+        Task<UserReadDto> GetByEmailAsDto(string email);
 
         Task<IEnumerable<UserModel>> GetAllAsModel();
 
-        Task<UserModel?> GetByIdAsModel(int id);
+        Task<UserModel> GetByIdAsModel(int id);
 
-        Task<UserModel?> GetByEmailAsModel(string email);
+        Task<UserModel> GetByEmailAsModel(string email);
 
         Task Create(UserCreationDto dtoModel, string pepper);
 

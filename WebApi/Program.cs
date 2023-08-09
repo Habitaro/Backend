@@ -1,7 +1,10 @@
 using WebApi.Startup;
+using WebApi.Startup.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 builder.Services.RegisterServices(builder.Configuration);
 

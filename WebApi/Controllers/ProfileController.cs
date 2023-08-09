@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using WebApi.Models.Contracts;
 using WebApi.Models.Services.Abstractions;
+using WebApi.Startup.Filters;
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [SwaggerTag("Profile data")]
+    [ServiceFilter(typeof(GlobalExceptionFilter))]
     public class ProfileController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
@@ -34,13 +36,7 @@ namespace WebApi.Controllers
         public async Task<ActionResult<UserReadDto>> GetById(int id)
         {
             var userModel = await _unit.UserService.GetByIdAsDto(id);
-
-            if (userModel != null)
-            {
-                return Ok(userModel);
-            }
-
-            return NotFound($"User with id {id} was not found");
+            return Ok(userModel);
         }
 
         [HttpPatch("{id}")]
@@ -49,14 +45,8 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update([FromBody] UserEditDto dtoModel, int id)
         {
-            if (await _unit.UserService.GetByIdAsDto(id) != null)
-            {
-                await _unit.UserService.Update(dtoModel, id);
-
-                return NoContent();
-            }
-
-            return NotFound($"User with Id {id} was not found");
+            await _unit.UserService.Update(dtoModel, id);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
@@ -65,15 +55,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                await _unit.UserService.RemoveById(id);
-            }
-            catch (ArgumentNullException)
-            {
-                return NotFound($"User with Id {id} was not found");
-            }
-
+            await _unit.UserService.RemoveById(id);
             return NoContent();
         }
     }

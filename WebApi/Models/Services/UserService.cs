@@ -53,27 +53,21 @@ namespace WebApi.Models.Services
             return dtos;
         }
 
-        public async Task<UserReadDto?> GetByEmailAsDto(string email)
+        public async Task<UserReadDto> GetByEmailAsDto(string email)
         {
-            var entity = await _repositoryManager.UserRepository.GetByEmail(email);
-            if (entity != null)
-            {
-                var dto = _mapper.Map<User, UserReadDto>(entity);
-                return dto;
-            }
+            var entity = await _repositoryManager.UserRepository.GetByEmail(email)
+                ?? throw new ArgumentNullException(message: $"User with Email {email} was not found", null);
 
-            return null;
+            var dto = _mapper.Map<User, UserReadDto>(entity);
+            return dto;
         }
 
-        public async Task<UserReadDto?> GetByIdAsDto(int id)
+        public async Task<UserReadDto> GetByIdAsDto(int id)
         {
-            var entity = await _repositoryManager.UserRepository.GetById(id);
-            if (entity != null)
-            {
-                var dto = _mapper.Map<User, UserReadDto>(entity);
-                return dto;
-            }
-            return null;
+            var entity = await _repositoryManager.UserRepository.GetById(id)
+                ?? throw new ArgumentNullException(message: $"User with Id {id} was not found", null);
+            var dto = _mapper.Map<User, UserReadDto>(entity);
+            return dto;
         }
 
         public async Task<IEnumerable<UserModel>> GetAllAsModel()
@@ -83,26 +77,22 @@ namespace WebApi.Models.Services
             return models;
         }
 
-        public async Task<UserModel?> GetByEmailAsModel(string email)
+        public async Task<UserModel> GetByEmailAsModel(string email)
         {
-            var entity = await _repositoryManager.UserRepository.GetByEmail(email);
-            if (entity != null)
-            {
-                var model = _mapper.Map<User, UserModel>(entity);
-                return model;
-            }
-            return null;
+            var entity = await _repositoryManager.UserRepository.GetByEmail(email)
+                ?? throw new ArgumentNullException(message: $"User with Email {email} was not found", null);
+
+            var model = _mapper.Map<User, UserModel>(entity);
+            return model;
         }
 
-        public async Task<UserModel?> GetByIdAsModel(int id)
+        public async Task<UserModel> GetByIdAsModel(int id)
         {
-            var entity = await _repositoryManager.UserRepository.GetById(id);
-            if (entity != null)
-            {
-                var model = _mapper.Map<User, UserModel>(entity);
-                return model;
-            }
-            return null;
+            var entity = await _repositoryManager.UserRepository.GetById(id)
+                ?? throw new ArgumentNullException(message: $"User with Id {id} was not found", null);
+
+            var model = _mapper.Map<User, UserModel>(entity);
+            return model;
         }
 
         public async Task Remove(UserModel model)
@@ -114,14 +104,16 @@ namespace WebApi.Models.Services
 
         public async Task RemoveById(int id)
         {
-            var entity = await _repositoryManager.UserRepository.GetById(id) ?? throw new ArgumentNullException(nameof(id));
+            var entity = await _repositoryManager.UserRepository.GetById(id) 
+                ?? throw new ArgumentNullException(message: $"User with Id {id} was not found", null);
             _repositoryManager.UserRepository.Delete(entity);
             await _repositoryManager.SaveChanges();
         }
 
         public async Task Update(UserEditDto dtoModel, int id)
         {
-            var user = await _repositoryManager.UserRepository.GetById(id) ?? throw new ArgumentNullException(nameof(dtoModel));
+            var user = await _repositoryManager.UserRepository.GetById(id)
+                ?? throw new ArgumentNullException(message: $"User with Id {id} was not found", null);
             user.AvatarId = dtoModel.AvatarId ?? user.AvatarId;
             user.Status = dtoModel.Status ?? user.Status;
             user.UserName = dtoModel.Username ?? user.UserName;
@@ -140,7 +132,8 @@ namespace WebApi.Models.Services
 
         public async Task AddExp(UserModel model, int exp)
         {
-            var entity = await _repositoryManager.UserRepository.GetById(model.Id) ?? throw new ArgumentNullException(nameof(model));
+            var entity = await _repositoryManager.UserRepository.GetById(model.Id) 
+                ?? throw new ArgumentNullException(message: $"User with Id {model.Id} was not found", null);
             entity.CurrentExp += exp;
 
             if ((entity.CurrentExp >= entity.RequiredExp) && entity.RankId < 8)

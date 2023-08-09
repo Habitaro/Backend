@@ -1,19 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Annotations;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using WebApi.Models;
 using WebApi.Models.Contracts;
+using WebApi.Models.Services;
 using WebApi.Models.Services.Abstractions;
+using WebApi.Startup.Filters;
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [SwaggerTag("Authentication")]
+    [ServiceFilter(typeof(GlobalExceptionFilter))]
     public class AuthController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
@@ -41,7 +39,7 @@ namespace WebApi.Controllers
 
             var userModel = await _unit.UserService.GetByEmailAsModel(creationDto.Email);
 
-            var token = GenerateToken(userModel!);
+            var token = JwtHelper.GenerateToken(userModel, _configuration);
 
             return Ok(token);
         }
@@ -55,14 +53,9 @@ namespace WebApi.Controllers
 
             var user = await _unit.UserService.GetByEmailAsModel(loginDto.Email);
 
-            if (user == null)
-            {
-                return NotFound("User was not found");
-            }
-
             if (_unit.UserService.VerifyPassword(user, loginDto.Password, _configuration["PasswordPepper"]))
             {
-                var token = GenerateToken(user);
+                var token = JwtHelper.GenerateToken(user, _configuration);
                 return Ok(token);
             }
             else
@@ -71,31 +64,6 @@ namespace WebApi.Controllers
             }
         }
 
-        private string GenerateToken(UserModel model)
-        {
-            var issuer = _configuration["Jwt:Issuer"];
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-            var tokenDescriptor = new SecurityTokenDescriptor()
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                        new Claim("Id", model.Id.ToString()),
-                        new Claim(JwtRegisteredClaimNames.Name, model.Username),
-                        new Claim(JwtRegisteredClaimNames.Email, model.Email),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    }),
-                Expires = DateTime.Now.AddMinutes(20),
-                Issuer = issuer,
-                Audience = issuer,
-                SigningCredentials = new SigningCredentials
-                (new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var stringToken = tokenHandler.WriteToken(token);
-
-            return stringToken;
-        }
+        
     }
 }
