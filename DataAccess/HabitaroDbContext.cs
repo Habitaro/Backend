@@ -12,7 +12,11 @@ namespace DataAccess
 {
     public class HabitaroDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
-        public HabitaroDbContext(DbContextOptions<HabitaroDbContext> options)
+        public HabitaroDbContext()
+        {
+        }
+
+        public HabitaroDbContext(DbContextOptions options)
             : base(options)
         {
         }
@@ -22,7 +26,7 @@ namespace DataAccess
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-                
+
 
             builder.Entity<Rank>().HasData(new Rank()
             {
@@ -62,5 +66,5 @@ namespace DataAccess
                 Name = "Gold cat 3"
             });
         }
-    }   
+    }
 }

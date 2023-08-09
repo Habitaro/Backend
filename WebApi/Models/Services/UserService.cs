@@ -24,8 +24,8 @@ namespace WebApi.Models.Services
 
         public void Create(UserForCreationDto dtoModel, string pepper)
         {
-            var salt = GenerateSalt();
-            var passwordHash = ComputeHash(dtoModel.Password, salt, pepper, _iterations);
+            var salt = HashHelper.GenerateSalt();
+            var passwordHash = HashHelper.ComputeHash(dtoModel.Password, salt, pepper, _iterations);
 
             var model = new UserModel()
             {
@@ -102,33 +102,12 @@ namespace WebApi.Models.Services
             _repositoryManager.SaveChanges();
         }
 
-        private static string ComputeHash(string password, string salt, string pepper, int iterations)
-        {
-            if (iterations <= 0) return password;
-
-            using var hmac = SHA256.Create();
-
-            var passwordSaltPepper = $"{password}{salt}{pepper}";
-            var byteValue = Encoding.UTF8.GetBytes(passwordSaltPepper);
-            var byteHash = hmac.ComputeHash(byteValue);
-            var hash = Convert.ToBase64String(byteHash);
-            return ComputeHash(hash, salt, pepper, iterations - 1);
-        }
-
         public bool VerifyPassword(UserModel model, string password, string pepper)
         {
 
-            var computedHash = ComputeHash(password, model.PasswordSalt, pepper, _iterations);
+            var computedHash = HashHelper.ComputeHash(password, model.PasswordSalt, pepper, _iterations);
 
             return model.PasswordHash.SequenceEqual(computedHash);
-        }
-
-        private static string GenerateSalt()
-        {
-            var rng = RandomNumberGenerator.Create();
-            var byteSalt = new byte[16];
-            rng.GetBytes(byteSalt);
-            return Convert.ToBase64String(byteSalt);
         }
 
         public void AddExp(UserModel model, int exp)
