@@ -9,13 +9,13 @@ namespace DataAccess.Repositories.Abstractions
 {
     public interface IUserRepository
     {
-        IEnumerable<User> GetAll();
+        Task<IEnumerable<User>> GetAll();
 
-        User? GetById(int id);
+        Task<User?> GetById(int id);
 
-        User? GetByEmail(string email);
+        Task<User?> GetByEmail(string email);
 
-        void Add(User user);
+        Task Add(User user);
 
         void Update(User user);
 

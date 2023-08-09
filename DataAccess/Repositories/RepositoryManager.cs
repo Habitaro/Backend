@@ -18,36 +18,11 @@ namespace DataAccess.Repositories
         {
             this.context = context;
             UserRepository = new UserRepository(context);
-            SeedData();
         }
 
-        public void SaveChanges()
+        public async Task SaveChanges()
         {
-            context.SaveChanges();
-        }
-
-        private void SeedData()
-        {
-            if (!context.Users.Any())
-            {
-                for (int i = 1; i <= 10; i++)
-                {
-                    context.Ranks.Add(new Rank() { Id = i, Name = $"Silver cat {i}" });
-                    context.Users.Add(new User()
-                    {
-                        Id = i,
-                        Username = $"User{i}",
-                        Email = $"user{i}@gmail.com",
-                        AvatarId = i,
-                        PasswordHash = System.Text.Encoding.UTF8.GetBytes($"userPassword{i}"),
-                        PasswordSalt = System.Text.Encoding.UTF8.GetBytes("Aboba"),
-                        RankId = i,
-                        Status = "Sleepin",
-                    });
-                }
-
-                SaveChanges();
-            }
+            await context.SaveChangesAsync();
         }
     }
 }

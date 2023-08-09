@@ -2,7 +2,7 @@
 
 namespace WebApi.Models.Contracts
 {
-    public class UserForCreationDto
+    public class UserCreationDto
     {
         [Required]
         [StringLength(16, ErrorMessage = "{0} length must be between {2} and {1}.", MinimumLength = 2)]
@@ -15,12 +15,13 @@ namespace WebApi.Models.Contracts
 
         [Required]
         [StringLength(20, ErrorMessage = "{0} length must be between {2} and {1}.", MinimumLength = 8)]
-        [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[/,*\\-+$#@%&])[A-Za-z\\d/,*\\-+$#@%&]{8,20}$",
-            ErrorMessage ="Password Should contain at least 1 uppercase, 1 lowercase, 1 digit and 1 special character(/, *, -, +, @, #, $, %, &)")]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$", 
+            ErrorMessage = "Require at least 1 uppercase, lowercase and digit")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [Required]
-        [Compare("Password")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password should match")]
         public string ConfirmPassword { get; set; }
     }
 }

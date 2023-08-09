@@ -5,11 +5,11 @@ using WebApi.Models.Services.Abstractions;
 
 namespace WebApi.Models.Services
 {
-    public class ServiceManager : IServiceManager
+    public class UnitOfWork : IUnitOfWork
     {
         public IUserService UserService { get; }
 
-        public ServiceManager(IRepositoryManager manager, IMapper mapper)
+        public UnitOfWork(IRepositoryManager manager, IMapper mapper)
         {
             UserService = new UserService(manager, mapper);
         }

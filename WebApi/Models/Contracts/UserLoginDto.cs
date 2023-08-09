@@ -2,7 +2,7 @@
 
 namespace WebApi.Models.Contracts
 {
-    public class UserForLoginDto
+    public class UserLoginDto
     {
         [Required]
         [EmailAddress]

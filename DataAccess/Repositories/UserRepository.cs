@@ -11,43 +11,43 @@ namespace DataAccess.Repositories
 {
     internal class UserRepository : IUserRepository
     {
-        private readonly HabitaroDbContext context;
+        private readonly HabitaroDbContext _context;
 
         public UserRepository(HabitaroDbContext context)
         {
-            this.context = context;
+            _context = context;
         }
 
         public void Delete(User user)
         {
-            context.Users.Remove(user);
+            _context.Users.Remove(user);
         }
         
-        public void Add(User user) 
+        public async Task Add(User user) 
         {
-            context.Users.Add(user);
+            await _context.Users.AddAsync(user);
         }
 
-        public IEnumerable<User> GetAll()
+        public async Task<IEnumerable<User>> GetAll()
         {
-            var users = context.Users.Include(u => u.Rank).ToList();
+            var users = await _context.Users.Include(u => u.Rank).ToListAsync();
             return users;
         }
 
-        public User? GetById(int id)
+        public async Task<User?> GetById(int id)
         {
-            var user = context.Users.Include(u => u.Rank).SingleOrDefault(u => u.Id == id);
+            var user = await _context.Users.Include(u => u.Rank).SingleOrDefaultAsync(u => u.Id == id);
             return user;
         }
 
         public void Update(User user)
         {
-            context.Users.Update(user);
+            _context.Users.Update(user);
         }
 
-        public User? GetByEmail(string email)
+        public async Task<User?> GetByEmail(string email)
         {
-            var user = context.Users.Include(u => u.Rank).SingleOrDefault(u => u.Email == email);
+            var user = await _context.Users.Include(u => u.Rank).SingleOrDefaultAsync(u => u.Email == email);
             return user;
         }
     }

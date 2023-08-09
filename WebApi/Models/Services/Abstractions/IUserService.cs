@@ -4,20 +4,28 @@ namespace WebApi.Models.Services.Abstractions
 {
     public interface IUserService
     {
-        IEnumerable<UserModel> GetAll();
+        Task<IEnumerable<UserReadDto>> GetAllAsDto();
 
-        UserModel? GetById(int id);
+        Task<UserReadDto> GetByIdAsDto(int id);
 
-        UserModel? GetByEmail(string email);
+        Task<UserReadDto> GetByEmailAsDto(string email);
 
-        void Create(UserForCreationDto dtoModel);
+        Task<IEnumerable<UserModel>> GetAllAsModel();
 
-        void Update(UserForEditDto dtoModel, int id);
+        Task<UserModel> GetByIdAsModel(int id);
 
-        void Remove(UserModel model);
+        Task<UserModel> GetByEmailAsModel(string email);
 
-        void RemoveById(int id);
+        Task Create(UserCreationDto dtoModel, string pepper);
 
-        bool VerifyPassword(UserModel user, string password);
+        Task Update(UserEditDto dtoModel, int id);
+
+        Task Remove(UserModel model);
+
+        Task RemoveById(int id);
+
+        bool VerifyPassword(UserModel model, string password, string pepper);
+
+        Task AddExp(UserModel model, int exp);
     }
 }
