@@ -1,4 +1,6 @@
 ﻿using DataAccess.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,20 +10,21 @@ using System.Threading.Tasks;
 
 namespace DataAccess
 {
-    public class HabitaroDbContext : DbContext
+    public class HabitaroDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         public HabitaroDbContext(DbContextOptions<HabitaroDbContext> options)
             : base(options)
         {
         }
 
-        public DbSet<User> Users { get; set; }
-
         public DbSet<Rank> Ranks { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            modelBuilder.Entity<Rank>().HasData(new Rank()
+            base.OnModelCreating(builder);
+                
+
+            builder.Entity<Rank>().HasData(new Rank()
             {
                 Id = 1,
                 Name = "Bronze cat 1",
@@ -58,8 +61,6 @@ namespace DataAccess
                 Id = 9,
                 Name = "Gold cat 3"
             });
-
-            base.OnModelCreating(modelBuilder);
         }
     }   
 }

@@ -1,8 +1,10 @@
 using AutoMapper;
 using DataAccess;
+using DataAccess.Entities;
 using DataAccess.Repositories;
 using DataAccess.Repositories.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -13,13 +15,16 @@ using WebApi.Models.Services.Abstractions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<HabitaroDbContext>(opt => 
-    { 
-        opt.UseSqlServer(builder.Configuration.GetConnectionString("HabitaroDb"));
-    });
+builder.Services.AddDbContextPool<HabitaroDbContext>(opt =>
+{
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("HabitaroDb"));
+});
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<HabitaroMapProfile>());
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddIdentity<User, IdentityRole<int>>()
+    .AddEntityFrameworkStores<HabitaroDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

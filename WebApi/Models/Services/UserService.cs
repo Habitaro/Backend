@@ -96,7 +96,7 @@ namespace WebApi.Models.Services
             var user = _repositoryManager.UserRepository.GetById(id)!;
             user.AvatarId = dtoModel.AvatarId ?? user.AvatarId;
             user.Status = dtoModel.Status ?? user.Status;
-            user.Username = dtoModel.Username ?? user.Username;
+            user.UserName = dtoModel.Username ?? user.UserName;
 
             _repositoryManager.UserRepository.Update(user);
             _repositoryManager.SaveChanges();
