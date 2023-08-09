@@ -20,9 +20,9 @@ namespace DataAccess.Repositories
             UserRepository = new UserRepository(context);
         }
 
-        public void SaveChanges()
+        public async Task SaveChanges()
         {
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

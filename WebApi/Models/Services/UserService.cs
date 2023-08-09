@@ -22,7 +22,7 @@ namespace WebApi.Models.Services
             _mapper = mapper;
         }
 
-        public void Create(UserCreationDto dtoModel, string pepper)
+        public async Task Create(UserCreationDto dtoModel, string pepper)
         {
             var salt = HashHelper.GenerateSalt();
             var passwordHash = HashHelper.ComputeHash(dtoModel.Password, salt, pepper, _iterations);
@@ -41,21 +41,21 @@ namespace WebApi.Models.Services
 
             var entity = _mapper.Map<UserModel, User>(model);
 
-            _repositoryManager.UserRepository.Add(entity);
-            _repositoryManager.SaveChanges();
+            await _repositoryManager.UserRepository.Add(entity);
+            await _repositoryManager.SaveChanges();
 
         }
 
-        public IEnumerable<UserReadDto> GetAllAsDto()
+        public async Task<IEnumerable<UserReadDto>> GetAllAsDto()
         {
-            var entities = _repositoryManager.UserRepository.GetAll();
+            var entities = await _repositoryManager.UserRepository.GetAll();
             var dtos = _mapper.Map<IEnumerable<User>, IEnumerable<UserReadDto>>(entities);
             return dtos;
         }
 
-        public UserReadDto? GetByEmailAsDto(string email)
+        public async Task<UserReadDto?> GetByEmailAsDto(string email)
         {
-            var entity = _repositoryManager.UserRepository.GetByEmail(email);
+            var entity = await _repositoryManager.UserRepository.GetByEmail(email);
             if (entity != null)
             {
                 var dto = _mapper.Map<User, UserReadDto>(entity);
@@ -65,71 +65,69 @@ namespace WebApi.Models.Services
             return null;
         }
 
-        public UserReadDto? GetByIdAsDto(int id)
+        public async Task<UserReadDto?> GetByIdAsDto(int id)
         {
-            var entity = _repositoryManager.UserRepository.GetById(id);
+            var entity = await _repositoryManager.UserRepository.GetById(id);
             if (entity != null)
             {
                 var dto = _mapper.Map<User, UserReadDto>(entity);
                 return dto;
             }
-
             return null;
         }
-        public IEnumerable<UserModel> GetAllAsModel()
+
+        public async Task<IEnumerable<UserModel>> GetAllAsModel()
         {
-            var entities = _repositoryManager.UserRepository.GetAll();
+            var entities = await _repositoryManager.UserRepository.GetAll();
             var models = _mapper.Map<IEnumerable<User>, IEnumerable<UserModel>>(entities);
             return models;
         }
 
-        public UserModel? GetByEmailAsModel(string email)
+        public async Task<UserModel?> GetByEmailAsModel(string email)
         {
-            var entity = _repositoryManager.UserRepository.GetByEmail(email);
+            var entity = await _repositoryManager.UserRepository.GetByEmail(email);
             if (entity != null)
             {
                 var model = _mapper.Map<User, UserModel>(entity);
                 return model;
             }
-
             return null;
         }
 
-        public UserModel? GetByIdAsModel(int id)
+        public async Task<UserModel?> GetByIdAsModel(int id)
         {
-            var entity = _repositoryManager.UserRepository.GetById(id);
+            var entity = await _repositoryManager.UserRepository.GetById(id);
             if (entity != null)
             {
                 var model = _mapper.Map<User, UserModel>(entity);
                 return model;
             }
-
             return null;
         }
 
-        public void Remove(UserModel model)
+        public async Task Remove(UserModel model)
         {
             var entity = _mapper.Map<UserModel, User>(model);
             _repositoryManager.UserRepository.Delete(entity);
-            _repositoryManager.SaveChanges();
+            await _repositoryManager.SaveChanges();
         }
 
-        public void RemoveById(int id)
+        public async Task RemoveById(int id)
         {
-            var entity = _repositoryManager.UserRepository.GetById(id) ?? throw new ArgumentNullException(nameof(id));
+            var entity = await _repositoryManager.UserRepository.GetById(id) ?? throw new ArgumentNullException(nameof(id));
             _repositoryManager.UserRepository.Delete(entity);
-            _repositoryManager.SaveChanges();
+            await _repositoryManager.SaveChanges();
         }
 
-        public void Update(UserEditDto dtoModel, int id)
+        public async Task Update(UserEditDto dtoModel, int id)
         {
-            var user = _repositoryManager.UserRepository.GetById(id)!;
+            var user = await _repositoryManager.UserRepository.GetById(id) ?? throw new ArgumentNullException(nameof(dtoModel));
             user.AvatarId = dtoModel.AvatarId ?? user.AvatarId;
             user.Status = dtoModel.Status ?? user.Status;
             user.UserName = dtoModel.Username ?? user.UserName;
 
             _repositoryManager.UserRepository.Update(user);
-            _repositoryManager.SaveChanges();
+            await _repositoryManager.SaveChanges();
         }
 
         public bool VerifyPassword(UserModel model, string password, string pepper)
@@ -140,9 +138,9 @@ namespace WebApi.Models.Services
             return model.PasswordHash.SequenceEqual(computedHash);
         }
 
-        public void AddExp(UserModel model, int exp)
+        public async Task AddExp(UserModel model, int exp)
         {
-            var entity = _repositoryManager.UserRepository.GetById(model.Id) ?? throw new ArgumentNullException(nameof(model));
+            var entity = await _repositoryManager.UserRepository.GetById(model.Id) ?? throw new ArgumentNullException(nameof(model));
             entity.CurrentExp += exp;
 
             if ((entity.CurrentExp >= entity.RequiredExp) && entity.RankId < 8)
@@ -152,7 +150,7 @@ namespace WebApi.Models.Services
                 entity.RequiredExp -= entity.RequiredExp % 10;
             }
 
-            _repositoryManager.SaveChanges();
+            await _repositoryManager.SaveChanges();
         }
     }
 }

@@ -10,6 +10,6 @@ namespace DataAccess.Repositories.Abstractions
     {
         IUserRepository UserRepository { get; }
 
-        void SaveChanges();
+        Task SaveChanges();
     }
 }

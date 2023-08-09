@@ -1,11 +1,6 @@
-﻿using DataAccess.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Swashbuckle.AspNetCore.Annotations;
-using System.Security.Claims;
-using WebApi.Models;
 using WebApi.Models.Contracts;
 using WebApi.Models.Services.Abstractions;
 
@@ -27,9 +22,9 @@ namespace WebApi.Controllers
         [Authorize]
         [SwaggerOperation(Summary ="Get all users profile data")]
         [ProducesResponseType(typeof(UserReadDto), StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<UserReadDto>> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<UserReadDto>>> GetAllUsers()
         {
-            var users = _unit.UserService.GetAllAsDto();
+            var users = await _unit.UserService.GetAllAsDto();
             return Ok(users);
         }
 
@@ -37,9 +32,9 @@ namespace WebApi.Controllers
         [Authorize]
         [SwaggerOperation(Summary ="Get users profile data by Id")]
         [ProducesResponseType(typeof(UserReadDto), StatusCodes.Status200OK)]
-        public ActionResult<UserReadDto> GetById(int id)
+        public async Task<ActionResult<UserReadDto>> GetById(int id)
         {
-            var userModel = _unit.UserService.GetByIdAsDto(id);
+            var userModel = await _unit.UserService.GetByIdAsDto(id);
 
             if (userModel != null)
             {
@@ -53,11 +48,11 @@ namespace WebApi.Controllers
         [Authorize]
         [SwaggerOperation(Summary = "Update user`s data by Id")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult Update([FromBody] UserEditDto dtoModel, int id)
+        public async Task<IActionResult> Update([FromBody] UserEditDto dtoModel, int id)
         {
             if (ModelState.IsValid)
             {
-                _unit.UserService.Update(dtoModel, id);
+                await _unit.UserService.Update(dtoModel, id);
 
                 return NoContent();
             }
@@ -69,11 +64,11 @@ namespace WebApi.Controllers
         [Authorize]
         [SwaggerOperation(Summary = "Remove user`s profile by Id")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                _unit.UserService.RemoveById(id);
+                await _unit.UserService.RemoveById(id);
             }
             catch (ArgumentNullException)
             {

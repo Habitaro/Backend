@@ -23,20 +23,20 @@ namespace DataAccess.Repositories
             _context.Users.Remove(user);
         }
         
-        public void Add(User user) 
+        public async Task Add(User user) 
         {
-            _context.Users.Add(user);
+            await _context.Users.AddAsync(user);
         }
 
-        public IEnumerable<User> GetAll()
+        public async Task<IEnumerable<User>> GetAll()
         {
-            var users = _context.Users.Include(u => u.Rank).ToList();
+            var users = await _context.Users.Include(u => u.Rank).ToListAsync();
             return users;
         }
 
-        public User? GetById(int id)
+        public async Task<User?> GetById(int id)
         {
-            var user = _context.Users.Include(u => u.Rank).SingleOrDefault(u => u.Id == id);
+            var user = await _context.Users.Include(u => u.Rank).SingleOrDefaultAsync(u => u.Id == id);
             return user;
         }
 
@@ -45,9 +45,9 @@ namespace DataAccess.Repositories
             _context.Users.Update(user);
         }
 
-        public User? GetByEmail(string email)
+        public async Task<User?> GetByEmail(string email)
         {
-            var user = _context.Users.Include(u => u.Rank).SingleOrDefault(u => u.Email == email);
+            var user = await _context.Users.Include(u => u.Rank).SingleOrDefaultAsync(u => u.Email == email);
             return user;
         }
     }

@@ -22,26 +22,26 @@ namespace HabitaroTest
         }
 
         [Test]
-        public void GetAll_WhenCalled_ReturnsUsers()
+        public async Task GetAll_WhenCalled_ReturnsUsers()
         {
             //Arrange
             var referenceUsers = TestDataHelper.GetFakeUsersList();
             
             //Act
-            var users = _manager.UserRepository.GetAll();
+            var users = await _manager.UserRepository.GetAll();
 
             //Assert
             Assert.That(users.Count(), Is.EqualTo(referenceUsers.Count));
         }
 
         [Test]
-        public void GetById_WhenCalled_ReturnsUser()
+        public async Task GetById_WhenCalled_ReturnsUser()
         {
             //Arrange
             var referanceUser = TestDataHelper.GetFakeUsersList()[1];
 
             //Act
-            var user = _manager.UserRepository.GetById(2);
+            var user = await _manager.UserRepository.GetById(2);
 
             //Assert
             Assert.That(user, Is.Not.Null);
@@ -49,13 +49,13 @@ namespace HabitaroTest
         }
 
         [Test]
-        public void GetByEmail_WhenCalled_ReturnsUser()
+        public async Task GetByEmail_WhenCalled_ReturnsUser()
         {
             //Arrange
             var referanceUser = TestDataHelper.GetFakeUsersList()[1];
 
             //Act
-            var user = _manager.UserRepository.GetByEmail("mark.lu@test.com");
+            var user = await _manager.UserRepository.GetByEmail("mark.lu@test.com");
 
             //Assert
             Assert.That(user, Is.Not.Null);
@@ -63,7 +63,7 @@ namespace HabitaroTest
         }
 
         [Test]
-        public void Add_WhenCalled_AddsUser()
+        public async Task Add_WhenCalled_AddsUser()
         {
             //Arrange
             var passwordSalt = HashHelper.GenerateSalt();
@@ -77,9 +77,9 @@ namespace HabitaroTest
             };
 
             //Act
-            _manager.UserRepository.Add(user);
-            _manager.SaveChanges();
-            var addedUser = _manager.UserRepository.GetByEmail(user.Email);
+            await _manager.UserRepository.Add(user);
+            await _manager.SaveChanges();
+            var addedUser = await _manager.UserRepository.GetByEmail(user.Email);
 
             //Assert
             Assert.That(addedUser, Is.Not.Null);
