@@ -22,7 +22,7 @@ namespace WebApi.Models.Services
             _mapper = mapper;
         }
 
-        public void Create(UserForCreationDto dtoModel, string pepper)
+        public void Create(UserCreationDto dtoModel, string pepper)
         {
             var salt = HashHelper.GenerateSalt();
             var passwordHash = HashHelper.ComputeHash(dtoModel.Password, salt, pepper, _iterations);
@@ -46,14 +46,44 @@ namespace WebApi.Models.Services
 
         }
 
-        public IEnumerable<UserModel> GetAll()
+        public IEnumerable<UserReadDto> GetAllAsDto()
+        {
+            var entities = _repositoryManager.UserRepository.GetAll();
+            var dtos = _mapper.Map<IEnumerable<User>, IEnumerable<UserReadDto>>(entities);
+            return dtos;
+        }
+
+        public UserReadDto? GetByEmailAsDto(string email)
+        {
+            var entity = _repositoryManager.UserRepository.GetByEmail(email);
+            if (entity != null)
+            {
+                var dto = _mapper.Map<User, UserReadDto>(entity);
+                return dto;
+            }
+
+            return null;
+        }
+
+        public UserReadDto? GetByIdAsDto(int id)
+        {
+            var entity = _repositoryManager.UserRepository.GetById(id);
+            if (entity != null)
+            {
+                var dto = _mapper.Map<User, UserReadDto>(entity);
+                return dto;
+            }
+
+            return null;
+        }
+        public IEnumerable<UserModel> GetAllAsModel()
         {
             var entities = _repositoryManager.UserRepository.GetAll();
             var models = _mapper.Map<IEnumerable<User>, IEnumerable<UserModel>>(entities);
             return models;
         }
 
-        public UserModel? GetByEmail(string email)
+        public UserModel? GetByEmailAsModel(string email)
         {
             var entity = _repositoryManager.UserRepository.GetByEmail(email);
             if (entity != null)
@@ -65,7 +95,7 @@ namespace WebApi.Models.Services
             return null;
         }
 
-        public UserModel? GetById(int id)
+        public UserModel? GetByIdAsModel(int id)
         {
             var entity = _repositoryManager.UserRepository.GetById(id);
             if (entity != null)
@@ -91,7 +121,7 @@ namespace WebApi.Models.Services
             _repositoryManager.SaveChanges();
         }
 
-        public void Update(UserForEditDto dtoModel, int id)
+        public void Update(UserEditDto dtoModel, int id)
         {
             var user = _repositoryManager.UserRepository.GetById(id)!;
             user.AvatarId = dtoModel.AvatarId ?? user.AvatarId;

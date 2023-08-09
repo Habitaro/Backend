@@ -22,8 +22,8 @@ namespace WebApi.Controllers
 
         public AuthController(IUnitOfWork serviceManager, IConfiguration configuration)
         {
-            this._unit = serviceManager;
-            this._configuration = configuration;
+            _unit = serviceManager;
+            _configuration = configuration;
         }
 
         [HttpPost("Register")]
@@ -33,18 +33,18 @@ namespace WebApi.Controllers
             " valid email, password(length = 8..20, at least one lower-, uppercase and digit). Return JWT")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<string> Register(UserForCreationDto creationDto)
+        public ActionResult<string> Register(UserCreationDto creationDto)
         {
             if (ModelState.IsValid) 
             {
-                if (_unit.UserService.GetByEmail(creationDto.Email) != null)
+                if (_unit.UserService.GetByEmailAsModel(creationDto.Email) != null)
                 {
                     return BadRequest(error: "Email is already registered");
                 }
 
                 _unit.UserService.Create(creationDto, _configuration["PasswordPepper"]);
 
-                var userModel = _unit.UserService.GetByEmail(creationDto.Email)!;
+                var userModel = _unit.UserService.GetByEmailAsModel(creationDto.Email)!;
 
                 var token = GenerateToken(userModel);
 
@@ -59,11 +59,11 @@ namespace WebApi.Controllers
         [SwaggerOperation(Summary ="Log in", Description ="Require valid email and password. Returns JWT")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<string> Login(UserForLoginDto loginDto)
+        public ActionResult<string> Login(UserLoginDto loginDto)
         {
             if (ModelState.IsValid)
             {
-                var user = _unit.UserService.GetByEmail(loginDto.Email);
+                var user = _unit.UserService.GetByEmailAsModel(loginDto.Email);
 
                 if (user == null)
                 {

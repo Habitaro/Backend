@@ -4,15 +4,21 @@ namespace WebApi.Models.Services.Abstractions
 {
     public interface IUserService
     {
-        IEnumerable<UserModel> GetAll();
+        IEnumerable<UserReadDto> GetAllAsDto();
 
-        UserModel? GetById(int id);
+        UserReadDto? GetByIdAsDto(int id);
 
-        UserModel? GetByEmail(string email);
+        UserReadDto? GetByEmailAsDto(string email);
 
-        void Create(UserForCreationDto dtoModel, string pepper);
+        IEnumerable<UserModel> GetAllAsModel();
 
-        void Update(UserForEditDto dtoModel, int id);
+        UserModel? GetByIdAsModel(int id);
+
+        UserModel? GetByEmailAsModel(string email);
+
+        void Create(UserCreationDto dtoModel, string pepper);
+
+        void Update(UserEditDto dtoModel, int id);
 
         void Remove(UserModel model);
 

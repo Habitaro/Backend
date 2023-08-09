@@ -17,31 +17,29 @@ namespace WebApi.Controllers
     public class ProfileController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
-        private readonly IConfiguration _configuration;
 
-        public ProfileController(IUnitOfWork serviceManager, IConfiguration configuration)
+        public ProfileController(IUnitOfWork unitOfWord)
         {
-            _unit = serviceManager;
-            _configuration = configuration;
+            _unit = unitOfWord;
         }
 
         [HttpGet]
         [Authorize]
         [SwaggerOperation(Summary ="Get all users profile data")]
-        [ProducesResponseType(typeof(UserModel), StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<UserModel>> GetAllUsers()
+        [ProducesResponseType(typeof(UserReadDto), StatusCodes.Status200OK)]
+        public ActionResult<IEnumerable<UserReadDto>> GetAllUsers()
         {
-            var users = _unit.UserService.GetAll();
+            var users = _unit.UserService.GetAllAsDto();
             return Ok(users);
         }
 
         [HttpGet("{id}")]
         [Authorize]
         [SwaggerOperation(Summary ="Get users profile data by Id")]
-        [ProducesResponseType(typeof(UserModel), StatusCodes.Status200OK)]
-        public ActionResult<UserModel> GetById(int id)
+        [ProducesResponseType(typeof(UserReadDto), StatusCodes.Status200OK)]
+        public ActionResult<UserReadDto> GetById(int id)
         {
-            var userModel = _unit.UserService.GetById(id);
+            var userModel = _unit.UserService.GetByIdAsDto(id);
 
             if (userModel != null)
             {
@@ -55,7 +53,7 @@ namespace WebApi.Controllers
         [Authorize]
         [SwaggerOperation(Summary = "Update user`s data by Id")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult Update([FromBody] UserForEditDto dtoModel, int id)
+        public ActionResult Update([FromBody] UserEditDto dtoModel, int id)
         {
             if (ModelState.IsValid)
             {

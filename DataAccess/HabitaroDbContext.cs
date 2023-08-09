@@ -12,7 +12,7 @@ namespace DataAccess
 {
     public class HabitaroDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
-        public HabitaroDbContext()
+        protected HabitaroDbContext()
         {
         }
 
