@@ -53,7 +53,7 @@ namespace WebApi.Controllers
         [Authorize]
         [SwaggerOperation(Summary = "Update user`s data by Id")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult Update([FromBody] UserEditDto dtoModel, int id)
+        public IActionResult Update([FromBody] UserEditDto dtoModel, int id)
         {
             if (ModelState.IsValid)
             {
@@ -69,7 +69,7 @@ namespace WebApi.Controllers
         [Authorize]
         [SwaggerOperation(Summary = "Remove user`s profile by Id")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult Delete(int id)
+        public IActionResult Delete(int id)
         {
             try
             {
