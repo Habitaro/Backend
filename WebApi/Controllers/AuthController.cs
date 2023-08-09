@@ -27,60 +27,48 @@ namespace WebApi.Controllers
 
         [HttpPost("Register")]
         [AllowAnonymous]
-        [SwaggerOperation(Summary ="Registration", 
-            Description ="Require valid user info: username(length = 2..16, allowed letters and digits)," +
-            " valid email, password(length = 8..20, at least one lower-, uppercase and digit). Return JWT")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<string>> Register(UserCreationDto creationDto)
         {
-            if (ModelState.IsValid) 
+
+            if (await _unit.UserService.GetByEmailAsModel(creationDto.Email) != null)
             {
-                if (await _unit.UserService.GetByEmailAsModel(creationDto.Email) != null)
-                {
-                    return BadRequest(error: "Email is already registered");
-                }
-
-                await _unit.UserService.Create(creationDto, _configuration["PasswordPepper"]);
-
-                var userModel = await _unit.UserService.GetByEmailAsModel(creationDto.Email);
-
-                var token = GenerateToken(userModel!);
-
-                return Ok(token);
+                return BadRequest(error: "Email is already registered");
             }
 
-            return BadRequest(ModelState);
+            await _unit.UserService.Create(creationDto, _configuration["PasswordPepper"]);
+
+            var userModel = await _unit.UserService.GetByEmailAsModel(creationDto.Email);
+
+            var token = GenerateToken(userModel!);
+
+            return Ok(token);
         }
 
         [HttpPost("Login")]
         [AllowAnonymous]
-        [SwaggerOperation(Summary ="Log in", Description ="Require valid email and password. Returns JWT")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<string>> Login(UserLoginDto loginDto)
         {
-            if (ModelState.IsValid)
+
+            var user = await _unit.UserService.GetByEmailAsModel(loginDto.Email);
+
+            if (user == null)
             {
-                var user = await _unit.UserService.GetByEmailAsModel(loginDto.Email);
-
-                if (user == null)
-                {
-                    return BadRequest("User not found");
-                }
-
-                if (_unit.UserService.VerifyPassword(user, loginDto.Password, _configuration["PasswordPepper"]))
-                {
-                    var token = GenerateToken(user);
-                    return Ok(token);
-                }
-                else
-                {
-                    return BadRequest("Invalid password");
-                }
+                return NotFound("User was not found");
             }
 
-            return BadRequest(ModelState);
+            if (_unit.UserService.VerifyPassword(user, loginDto.Password, _configuration["PasswordPepper"]))
+            {
+                var token = GenerateToken(user);
+                return Ok(token);
+            }
+            else
+            {
+                return BadRequest("Invalid password");
+            }
         }
 
         private string GenerateToken(UserModel model)

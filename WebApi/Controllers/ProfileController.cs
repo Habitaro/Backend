@@ -20,7 +20,6 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [Authorize]
-        [SwaggerOperation(Summary ="Get all users profile data")]
         [ProducesResponseType(typeof(UserReadDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<UserReadDto>>> GetAllUsers()
         {
@@ -30,8 +29,8 @@ namespace WebApi.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        [SwaggerOperation(Summary ="Get users profile data by Id")]
         [ProducesResponseType(typeof(UserReadDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserReadDto>> GetById(int id)
         {
             var userModel = await _unit.UserService.GetByIdAsDto(id);
@@ -46,24 +45,24 @@ namespace WebApi.Controllers
 
         [HttpPatch("{id}")]
         [Authorize]
-        [SwaggerOperation(Summary = "Update user`s data by Id")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update([FromBody] UserEditDto dtoModel, int id)
         {
-            if (ModelState.IsValid)
+            if (await _unit.UserService.GetByIdAsDto(id) != null)
             {
                 await _unit.UserService.Update(dtoModel, id);
 
                 return NoContent();
             }
 
-            return BadRequest(ModelState);
+            return NotFound($"User with Id {id} was not found");
         }
 
         [HttpDelete("{id}")]
         [Authorize]
-        [SwaggerOperation(Summary = "Remove user`s profile by Id")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
         {
             try
