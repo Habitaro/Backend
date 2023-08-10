@@ -29,12 +29,6 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<string>> Register(UserCreationDto creationDto)
         {
-
-            if (await _unit.UserService.GetByEmailAsModel(creationDto.Email) != null)
-            {
-                return BadRequest(error: "Email is already registered");
-            }
-
             await _unit.UserService.Create(creationDto, _configuration["PasswordPepper"]);
 
             var userModel = await _unit.UserService.GetByEmailAsModel(creationDto.Email);

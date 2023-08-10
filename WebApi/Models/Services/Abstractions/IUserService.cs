@@ -26,6 +26,6 @@ namespace WebApi.Models.Services.Abstractions
 
         bool VerifyPassword(UserModel model, string password, string pepper);
 
-        Task AddExp(UserModel model, int exp);
+        Task AddExp(int id, int exp);
     }
 }

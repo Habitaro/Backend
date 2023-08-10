@@ -30,13 +30,19 @@ namespace DataAccess.Repositories
 
         public async Task<IEnumerable<User>> GetAll()
         {
-            var users = await _context.Users.Include(u => u.Rank).ToListAsync();
+            var users = await _context.Users.AsNoTracking().Include(u => u.Rank).ToListAsync();
             return users;
         }
 
         public async Task<User?> GetById(int id)
         {
             var user = await _context.Users.Include(u => u.Rank).SingleOrDefaultAsync(u => u.Id == id);
+            return user;
+        }
+
+        public async Task<User?> GetByIdAsNoTracking(int id)
+        {
+            var user = await _context.Users.AsNoTracking().Include(u => u.Rank).SingleOrDefaultAsync(u => u.Id == id);
             return user;
         }
 
@@ -47,7 +53,7 @@ namespace DataAccess.Repositories
 
         public async Task<User?> GetByEmail(string email)
         {
-            var user = await _context.Users.Include(u => u.Rank).SingleOrDefaultAsync(u => u.Email == email);
+            var user = await _context.Users.AsNoTracking().Include(u => u.Rank).SingleOrDefaultAsync(u => u.Email == email);
             return user;
         }
     }

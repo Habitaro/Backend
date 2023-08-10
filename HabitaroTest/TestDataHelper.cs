@@ -9,9 +9,9 @@ namespace HabitaroTest
 {
     internal static class TestDataHelper
     {
-        private const string _pepper = "Aboba123";
+        public const string _pepper = "Aboba123";
 
-        private const int _iterations = 3;
+        public const int _iterations = 3;
 
         public static DbSet<T> GetFakeDbSet<T>(List<T> sourceList) where T : class
         {
@@ -40,6 +40,10 @@ namespace HabitaroTest
                     Email = "johndoe@test.com",
                     PasswordHash = HashHelper.ComputeHash("JohnDoe123", passwordSalt, _pepper, _iterations),
                     PasswordSalt = passwordSalt,
+                    Status = "",
+                    AvatarId = 1,
+                    CurrentExp = 0,
+                    RequiredExp = 1000,
                     RankId = 1
                 },
                 new User()
@@ -49,6 +53,10 @@ namespace HabitaroTest
                     Email = "mark.lu@test.com",
                     PasswordHash = HashHelper.ComputeHash("Password123", passwordSalt, _pepper, _iterations),
                     PasswordSalt = passwordSalt,
+                    Status = "",
+                    AvatarId = 1,
+                    CurrentExp = 0,
+                    RequiredExp = 1000,
                     RankId = 1
                 },
                 new User()
@@ -58,6 +66,10 @@ namespace HabitaroTest
                     Email = "muller@test.com",
                     PasswordHash = HashHelper.ComputeHash("Password123", passwordSalt, _pepper, _iterations),
                     PasswordSalt = passwordSalt,
+                    Status = "",
+                    AvatarId = 1,
+                    CurrentExp = 0,
+                    RequiredExp = 1000,
                     RankId = 1
                 },
             };
