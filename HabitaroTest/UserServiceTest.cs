@@ -27,6 +27,15 @@ namespace HabitaroTest
 
             var dbContext = new HabitaroDbContext(dbOptions);
 
+            var configurationData = new Dictionary<string, string>()
+            {
+                {"PasswordPepper", "Aboba123"},
+            };
+
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(configurationData)
+                .Build();
+
             var mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<HabitaroMapProfile>()));
 
             foreach (var user in TestDataHelper.GetFakeUsersList())

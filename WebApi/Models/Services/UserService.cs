@@ -12,17 +12,20 @@ namespace WebApi.Models.Services
     {
         private readonly IRepositoryManager _repositoryManager;
 
+        private readonly IConfiguration _configuration;
+
         private readonly IMapper _mapper;
 
         private const int _iterations = 3;
 
-        public UserService(IRepositoryManager manager, IMapper mapper)
+        public UserService(IRepositoryManager manager, IMapper mapper, IConfiguration configuration)
         {
             _repositoryManager = manager;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
-        public async Task Create(UserCreationDto dtoModel, string pepper)
+        public async Task Create(UserCreationDto dtoModel)
         {
             try
             {
@@ -40,7 +43,7 @@ namespace WebApi.Models.Services
             }
 
             var salt = HashHelper.GenerateSalt();
-            var passwordHash = HashHelper.ComputeHash(dtoModel.Password, salt, pepper, _iterations);
+            var passwordHash = HashHelper.ComputeHash(dtoModel.Password, salt, _configuration["PasswordPepper"], _iterations);
 
             var model = new UserModel()
             {
@@ -138,10 +141,10 @@ namespace WebApi.Models.Services
             await _repositoryManager.SaveChanges();
         }
 
-        public bool VerifyPassword(UserModel model, string password, string pepper)
+        public bool VerifyPassword(UserModel model, string password)
         {
 
-            var computedHash = HashHelper.ComputeHash(password, model.PasswordSalt, pepper, _iterations);
+            var computedHash = HashHelper.ComputeHash(password, model.PasswordSalt, _configuration["PasswordPepper"], _iterations);
 
             return model.PasswordHash.SequenceEqual(computedHash);
         }
