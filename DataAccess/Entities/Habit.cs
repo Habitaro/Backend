@@ -10,10 +10,14 @@ namespace DataAccess.Entities
     {
         public int Id { get; set; }
 
+        public int UserId { get; set; }
+
         public string Name { get; set; } = null!;
 
-        public string Description { get; set; } = null!;
+        public string? Description { get; set; }
 
-        public ICollection<HabitDay> Progress { get; set; } = null!;
+        public User User { get; set; }
+
+        public IEnumerable<HabitDay> Progress { get; set; } = null!;
     }
 }

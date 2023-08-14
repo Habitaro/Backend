@@ -1,5 +1,6 @@
 ﻿using DataAccess.Entities;
 using DataAccess.Repositories.Abstractions;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +18,15 @@ namespace DataAccess.Repositories
             _context = context;
         }
 
-        public Task Add(Habit habit)
+        public async Task Add(Habit habit)
         {
-            throw new NotImplementedException();
+            await _context.AddAsync(habit);
         }
 
-        public Task<ICollection<Habit>> GetByUserId(int userId)
+        public async Task<ICollection<Habit>> GetByUserId(int userId)
         {
-            throw new NotImplementedException();
+            var Habits = await _context.Habits.Include(h => h.Progress).Where(h => h.UserId == userId).ToListAsync();
+            return Habits;
         }
     }
 }
