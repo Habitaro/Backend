@@ -50,7 +50,7 @@ namespace HabitaroTest
 
             dbContext.SaveChanges();
 
-            _service = new UserService(new RepositoryManager(dbContext), mapper);
+            _service = new UserService(new RepositoryManager(dbContext), mapper, configuration);
         }
 
         [Test]
@@ -218,7 +218,7 @@ namespace HabitaroTest
             };
 
             //Act
-            await _service.Create(dto, TestDataHelper._pepper);
+            await _service.Create(dto);
             var actual = await _service.GetByEmailAsModel(dto.Email);
 
             //Assert
@@ -227,7 +227,7 @@ namespace HabitaroTest
             {
                 Assert.That(actual.Email, Is.EqualTo(dto.Email));
                 Assert.That(actual.UserName, Is.EqualTo(dto.Username));
-                Assert.That(_service.VerifyPassword(actual, dto.Password, TestDataHelper._pepper), Is.True);
+                Assert.That(_service.VerifyPassword(actual, dto.Password), Is.True);
             });
         }
 
@@ -244,7 +244,7 @@ namespace HabitaroTest
             };
 
             //Assert
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await _service.Create(dto, TestDataHelper._pepper));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _service.Create(dto));
         }
 
 
