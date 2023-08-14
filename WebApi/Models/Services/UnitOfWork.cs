@@ -9,9 +9,12 @@ namespace WebApi.Models.Services
     {
         public IUserService UserService { get; }
 
-        public UnitOfWork(IRepositoryManager manager, IMapper mapper)
+        public IHabitService HabitService { get; }
+
+        public UnitOfWork(IRepositoryManager manager, IMapper mapper, IConfiguration configuration)
         {
-            UserService = new UserService(manager, mapper);
+            UserService = new UserService(manager, mapper, configuration);
+            HabitService = new HabitService(manager, mapper);
         }
     }
 }

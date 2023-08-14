@@ -14,10 +14,13 @@ namespace DataAccess.Repositories
 
         public IUserRepository UserRepository { get; }
 
+        public IHabitRepository HabitRepository { get; }
+
         public RepositoryManager(HabitaroDbContext context)
         {
             this.context = context;
             UserRepository = new UserRepository(context);
+            HabitRepository = new HabitRepository(context);
         }
 
         public async Task SaveChanges()

@@ -3,5 +3,7 @@
     public interface IUnitOfWork
     {
         IUserService UserService { get; }
+
+        IHabitService HabitService { get; }
     }
 }
