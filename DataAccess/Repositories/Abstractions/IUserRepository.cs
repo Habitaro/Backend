@@ -13,6 +13,8 @@ namespace DataAccess.Repositories.Abstractions
 
         Task<User?> GetById(int id);
 
+        Task<User?> GetByIdAsNoTracking(int id);
+
         Task<User?> GetByEmail(string email);
 
         Task Add(User user);

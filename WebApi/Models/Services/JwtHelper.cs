@@ -16,7 +16,7 @@ namespace WebApi.Models.Services
                 Subject = new ClaimsIdentity(new[]
                 {
                         new Claim("Id", model.Id.ToString()),
-                        new Claim(JwtRegisteredClaimNames.Name, model.Username),
+                        new Claim(JwtRegisteredClaimNames.Name, model.UserName),
                         new Claim(JwtRegisteredClaimNames.Email, model.Email),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     }),

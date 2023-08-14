@@ -16,7 +16,7 @@ namespace WebApi.Models.Services.Abstractions
 
         Task<UserModel> GetByEmailAsModel(string email);
 
-        Task Create(UserCreationDto dtoModel, string pepper);
+        Task Create(UserCreationDto dtoModel);
 
         Task Update(UserEditDto dtoModel, int id);
 
@@ -24,8 +24,8 @@ namespace WebApi.Models.Services.Abstractions
 
         Task RemoveById(int id);
 
-        bool VerifyPassword(UserModel model, string password, string pepper);
+        bool VerifyPassword(UserModel model, string password);
 
-        Task AddExp(UserModel model, int exp);
+        Task AddExp(int id, int exp);
     }
 }

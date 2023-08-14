@@ -12,24 +12,42 @@ namespace WebApi.Models.Services
     {
         private readonly IRepositoryManager _repositoryManager;
 
+        private readonly IConfiguration _configuration;
+
         private readonly IMapper _mapper;
 
         private const int _iterations = 3;
 
-        public UserService(IRepositoryManager manager, IMapper mapper)
+        public UserService(IRepositoryManager manager, IMapper mapper, IConfiguration configuration)
         {
             _repositoryManager = manager;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
-        public async Task Create(UserCreationDto dtoModel, string pepper)
+        public async Task Create(UserCreationDto dtoModel)
         {
+            try
+            {
+                if (await GetByEmailAsDto(dtoModel.Email) != null)
+                {
+                    throw new InvalidOperationException(message: $"The {dtoModel.Email} email is already registered");
+                }
+            }
+            catch (ArgumentNullException ex)
+            {
+                if (ex.Message != $"User with Email {dtoModel.Email} was not found")
+                {
+                    throw;
+                }
+            }
+
             var salt = HashHelper.GenerateSalt();
-            var passwordHash = HashHelper.ComputeHash(dtoModel.Password, salt, pepper, _iterations);
+            var passwordHash = HashHelper.ComputeHash(dtoModel.Password, salt, _configuration["PasswordPepper"], _iterations);
 
             var model = new UserModel()
             {
-                Username = dtoModel.Username,
+                UserName = dtoModel.Username,
                 Email = dtoModel.Email,
                 PasswordHash = passwordHash,
                 PasswordSalt = salt,
@@ -64,7 +82,7 @@ namespace WebApi.Models.Services
 
         public async Task<UserReadDto> GetByIdAsDto(int id)
         {
-            var entity = await _repositoryManager.UserRepository.GetById(id)
+            var entity = await _repositoryManager.UserRepository.GetByIdAsNoTracking(id)
                 ?? throw new ArgumentNullException(message: $"User with Id {id} was not found", null);
             var dto = _mapper.Map<User, UserReadDto>(entity);
             return dto;
@@ -97,7 +115,8 @@ namespace WebApi.Models.Services
 
         public async Task Remove(UserModel model)
         {
-            var entity = _mapper.Map<UserModel, User>(model);
+            var entity = await _repositoryManager.UserRepository.GetById(model.Id)
+                ?? throw new ArgumentNullException(message:$"User with Id {model.Id} was not found", null);
             _repositoryManager.UserRepository.Delete(entity);
             await _repositoryManager.SaveChanges();
         }
@@ -122,22 +141,23 @@ namespace WebApi.Models.Services
             await _repositoryManager.SaveChanges();
         }
 
-        public bool VerifyPassword(UserModel model, string password, string pepper)
+        public bool VerifyPassword(UserModel model, string password)
         {
 
-            var computedHash = HashHelper.ComputeHash(password, model.PasswordSalt, pepper, _iterations);
+            var computedHash = HashHelper.ComputeHash(password, model.PasswordSalt, _configuration["PasswordPepper"], _iterations);
 
             return model.PasswordHash.SequenceEqual(computedHash);
         }
 
-        public async Task AddExp(UserModel model, int exp)
+        public async Task AddExp(int id, int exp)
         {
-            var entity = await _repositoryManager.UserRepository.GetById(model.Id) 
-                ?? throw new ArgumentNullException(message: $"User with Id {model.Id} was not found", null);
+            var entity = await _repositoryManager.UserRepository.GetById(id) 
+                ?? throw new ArgumentNullException(message: $"User with Id {id} was not found", null);
             entity.CurrentExp += exp;
 
             if ((entity.CurrentExp >= entity.RequiredExp) && entity.RankId < 8)
             {
+                entity.RankId += 1;
                 entity.CurrentExp -= entity.RequiredExp;
                 entity.RequiredExp = (int)(entity.RequiredExp * 1.5);
                 entity.RequiredExp -= entity.RequiredExp % 10;
