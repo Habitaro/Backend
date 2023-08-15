@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using WebApi.Models.Contracts;
 using WebApi.Models.Services.Abstractions;
+using WebApi.Models.Services.Helpers;
 
 namespace WebApi.Models.Services
 {

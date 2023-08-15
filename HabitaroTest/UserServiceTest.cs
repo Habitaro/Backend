@@ -10,6 +10,7 @@ using WebApi.Models;
 using WebApi.Models.Contracts;
 using WebApi.Models.Services;
 using WebApi.Models.Services.Abstractions;
+using WebApi.Models.Services.Helpers;
 
 namespace HabitaroTest
 {

@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using WebApi.Models.Contracts;
-using WebApi.Models.Services;
 using WebApi.Models.Services.Abstractions;
+using WebApi.Models.Services.Helpers;
 using WebApi.Startup.Filters;
 
 namespace WebApi.Controllers

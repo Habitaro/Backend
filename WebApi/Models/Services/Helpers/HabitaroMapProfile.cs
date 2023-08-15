@@ -2,11 +2,11 @@
 using DataAccess.Entities;
 using WebApi.Models.Contracts;
 
-namespace WebApi.Models.Services
+namespace WebApi.Models.Services.Helpers
 {
     public class HabitaroMapProfile : Profile
     {
-        public HabitaroMapProfile() 
+        public HabitaroMapProfile()
         {
             CreateMap<User, UserModel>()
                 .ForMember(um => um.Rank, u => u.MapFrom(u => u.Rank.Name));

@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace WebApi.Models.Services
+namespace WebApi.Models.Services.Helpers
 {
     public static class HashHelper
     {
