@@ -11,6 +11,6 @@ namespace DataAccess.Repositories.Abstractions
     {
         Task Add(Habit habit);
 
-        Task<ICollection<Habit>> GetByUserId(int userId);
+        Task<IEnumerable<Habit>> GetByUserId(int userId);
     }
 }

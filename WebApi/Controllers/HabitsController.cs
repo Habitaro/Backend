@@ -27,9 +27,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> AddHabit(HabitCreationDto dto)
         {
             await _unit.HabitService.Add(dto);
-            var userId = int.Parse(User.FindFirstValue("Id"));
-            var habits = await _unit.HabitService.GetByUserId(userId);
-            return CreatedAtAction("GetByUserId", habits.Last());
+            return NoContent();           
         }
     }
 }

@@ -95,7 +95,7 @@ namespace HabitaroTest
 
             //Assert
             Assert.That(actual, Is.Not.Null);
-            Assert.That(actual, Has.Count.EqualTo(expected.Count()));
+            Assert.That(actual.Count(), Is.EqualTo(expected.Count()));
         }
     }
 }

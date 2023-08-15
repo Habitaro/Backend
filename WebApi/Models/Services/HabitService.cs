@@ -42,7 +42,7 @@ namespace WebApi.Models.Services
         public async Task<IEnumerable<HabitReadDto>> GetByUserId(int userId)
         {
             var habits = await _manager.HabitRepository.GetByUserId(userId);
-            var dtos = _mapper.Map<IEnumerable<HabitReadDto>>(habits);
+            var dtos = _mapper.Map<IEnumerable<Habit>, IEnumerable<HabitReadDto>>(habits);
 
             return dtos;
         }
