@@ -18,9 +18,10 @@ namespace WebApi.Models.Services
             _mapper = mapper;
         }
 
-        public async Task Add(HabitCreationDto dto)
+        public async Task Add(HabitCreationDto dto, int userId)
         {
             var habit = _mapper.Map<Habit>(dto);
+            habit.UserId = userId;
             habit.Progress = new List<HabitDay>()
             {
                 new HabitDay()
