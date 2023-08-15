@@ -1,3 +1,6 @@
+using AutoMapper;
+using DataAccess.Repositories;
+using Microsoft.Extensions.Configuration;
 using MockQueryable.Moq;
 using WebApi.Models.Contracts;
 using WebApi.Models.Services.Helpers;
@@ -12,13 +15,25 @@ namespace HabitaroTest
         [SetUp]
         public void Setup()
         {
-            var mock = new Mock<HabitaroDbContext>();
-            var fakeUsers = TestDataHelper.GetFakeUsersList();
+            var dbOptions = new DbContextOptionsBuilder<HabitaroDbContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
 
-            mock.Setup<DbSet<User>>(m => m.Users)
-                .Returns(TestDataHelper.GetFakeDbSet(fakeUsers));
+            var dbContext = new HabitaroDbContext(dbOptions);
 
-            _manager = new RepositoryManager(mock.Object);
+            foreach (var user in TestDataHelper.GetFakeUsersList())
+            {
+                dbContext.Users.Add(user);
+            }
+
+            foreach (var rank in TestDataHelper.GetRanks())
+            {
+                dbContext.Ranks.Add(rank);
+            }
+
+            dbContext.SaveChanges();
+
+            _manager = new RepositoryManager(dbContext);
         }
 
         [Test]
