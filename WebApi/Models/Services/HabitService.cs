@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DataAccess.Entities;
 using DataAccess.Repositories.Abstractions;
 using WebApi.Models.Contracts;
 using WebApi.Models.Services.Abstractions;
@@ -17,14 +18,33 @@ namespace WebApi.Models.Services
             _mapper = mapper;
         }
 
-        public Task Add(HabitCreationDto dto)
+        public async Task Add(HabitCreationDto dto)
         {
-            throw new NotImplementedException();
+            var habit = _mapper.Map<Habit>(dto);
+            habit.Progress = new List<HabitDay>()
+            {
+                new HabitDay()
+                {
+                    Date = DateTime.Now,
+                    IsCompleted = false
+                },
+                new HabitDay()
+                {
+                    Date = DateTime.Now.AddDays(1),
+                    IsCompleted = false
+                }
+            };
+
+            await _manager.HabitRepository.Add(habit);
+            await _manager.SaveChanges();
         }
 
-        public Task<IEnumerable<HabitReadDto>> GetByUserId(int userId)
+        public async Task<IEnumerable<HabitReadDto>> GetByUserId(int userId)
         {
-            throw new NotImplementedException();
+            var habits = await _manager.HabitRepository.GetByUserId(userId);
+            var dtos = _mapper.Map<IEnumerable<HabitReadDto>>(habits);
+
+            return dtos;
         }
     }
 }

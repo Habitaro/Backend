@@ -8,8 +8,6 @@
 
         public string Description { get; set; }
 
-        public int Exp { get; set; }
-
-        public ICollection<HabitDayModel> Progress { get; set; }
+        public IDictionary<DateOnly, bool> Progress { get; set; }
     }
 }
