@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace WebApi.Models.Services
+namespace WebApi.Models.Services.Helpers
 {
     public static class JwtHelper
     {

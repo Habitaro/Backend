@@ -1,7 +1,9 @@
 using AutoMapper;
+using DataAccess.Repositories;
+using Microsoft.Extensions.Configuration;
 using MockQueryable.Moq;
 using WebApi.Models.Contracts;
-using WebApi.Models.Services;
+using WebApi.Models.Services.Helpers;
 
 namespace HabitaroTest
 {

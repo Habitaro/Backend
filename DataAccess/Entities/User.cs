@@ -22,5 +22,7 @@ namespace DataAccess.Entities
         public int RankId { get; set; }
 
         public Rank Rank { get; set; }
+
+        public IEnumerable<Habit> Habits { get; set; }
     }
 }

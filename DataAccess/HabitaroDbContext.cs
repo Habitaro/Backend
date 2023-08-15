@@ -23,6 +23,10 @@ namespace DataAccess
 
         public DbSet<Rank> Ranks { get; set; }
 
+        public DbSet<Habit> Habits { get; set; }
+
+        public DbSet<HabitDay> HabitDays { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

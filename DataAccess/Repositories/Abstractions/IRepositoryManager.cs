@@ -10,6 +10,8 @@ namespace DataAccess.Repositories.Abstractions
     {
         IUserRepository UserRepository { get; }
 
+        IHabitRepository HabitRepository { get; }
+
         Task SaveChanges();
     }
 }

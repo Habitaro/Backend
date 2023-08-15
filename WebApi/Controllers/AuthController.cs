@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using WebApi.Models.Contracts;
-using WebApi.Models.Services;
 using WebApi.Models.Services.Abstractions;
+using WebApi.Models.Services.Helpers;
 using WebApi.Startup.Filters;
 
 namespace WebApi.Controllers
@@ -29,7 +29,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<string>> Register(UserCreationDto creationDto)
         {
-            await _unit.UserService.Create(creationDto, _configuration["PasswordPepper"]);
+            await _unit.UserService.Create(creationDto);
 
             var userModel = await _unit.UserService.GetByEmailAsModel(creationDto.Email);
 
@@ -47,7 +47,7 @@ namespace WebApi.Controllers
 
             var user = await _unit.UserService.GetByEmailAsModel(loginDto.Email);
 
-            if (_unit.UserService.VerifyPassword(user, loginDto.Password, _configuration["PasswordPepper"]))
+            if (_unit.UserService.VerifyPassword(user, loginDto.Password))
             {
                 var token = JwtHelper.GenerateToken(user, _configuration);
                 return Ok(token);
