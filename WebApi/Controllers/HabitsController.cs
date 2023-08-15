@@ -24,9 +24,12 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddHabit(HabitCreationDto dto)
+        [SwaggerOperation("Add Habit")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> AddHabit([FromBody]HabitCreationDto dto)
         {
-            await _unit.HabitService.Add(dto);
+            var userId = int.Parse(User.FindFirstValue("Id"));
+            await _unit.HabitService.Add(dto, userId);
             return NoContent();           
         }
     }
