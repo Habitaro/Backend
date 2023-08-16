@@ -15,7 +15,7 @@ namespace WebApi.Models.Services.Helpers
 
             foreach (var habitDay in source)
             {
-                dictionary[DateOnly.FromDateTime(habitDay.Date).ToString()] = habitDay.IsCompleted;
+                dictionary[habitDay.Date.ToString()] = habitDay.IsCompleted;
             }
 
             return dictionary;

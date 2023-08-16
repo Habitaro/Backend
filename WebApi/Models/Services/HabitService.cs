@@ -26,12 +26,12 @@ namespace WebApi.Models.Services
             {
                 new HabitDay()
                 {
-                    Date = DateTime.Now,
+                    Date = DateOnly.FromDateTime(DateTime.Now),
                     IsCompleted = false
                 },
                 new HabitDay()
                 {
-                    Date = DateTime.Now.AddDays(1),
+                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                     IsCompleted = false
                 }
             };
