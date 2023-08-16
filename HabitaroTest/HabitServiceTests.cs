@@ -107,13 +107,12 @@ namespace HabitaroTest
             //Arrange
             var expected = new HabitCreationDto()
             {
-                UserId = 1,
                 Name = "Test habit"
             };
 
             //Act
-            await _service.Add(expected);
-            var actualHabits = await _service.GetByUserId(expected.UserId);
+            await _service.Add(expected, 1);
+            var actualHabits = await _service.GetByUserId(1);
 
             //Assert
             Assert.That(actualHabits, Is.Not.Null);

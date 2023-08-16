@@ -32,5 +32,19 @@ namespace WebApi.Controllers
             await _unit.HabitService.Add(dto, userId);
             return NoContent();           
         }
+
+        [HttpGet]
+        [SwaggerOperation("Get sorted habits")]
+        [ProducesResponseType(typeof(IEnumerable<HabitReadDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<HabitReadDto>>> GetSortedByNameDesc([FromQuery] string? sortingBy)
+        {
+            int userId = int.Parse(User.FindFirstValue("Id"));
+            IEnumerable<HabitReadDto> habits = sortingBy switch
+            {
+                "Name" => await _unit.HabitService.GetSortedByNameAsc(userId),
+                _ => await _unit.HabitService.GetByUserId(userId),
+            };
+            return Ok(habits);
+        }
     }
 }

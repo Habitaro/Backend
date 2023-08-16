@@ -8,7 +8,7 @@
 
         public string Name { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public IDictionary<DateOnly, bool> Progress { get; set; }
     }
