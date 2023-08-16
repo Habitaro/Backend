@@ -17,7 +17,7 @@ namespace WebApi.Models.Services.Helpers
             CreateMap<User, UserReadDto>()
                 .ForMember(dto => dto.Rank, u => u.MapFrom(u => u.Rank.Name));
 
-            CreateMap<IEnumerable<HabitDay>, IDictionary<DateOnly, bool>>()
+            CreateMap<IEnumerable<HabitDay>, IDictionary<string, bool>>()
                 .ConvertUsing<HabitDayListToDictionaryConverter>();
 
             CreateMap<Habit, HabitReadDto>();
