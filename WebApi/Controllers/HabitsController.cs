@@ -13,7 +13,7 @@ namespace WebApi.Controllers
     [ApiController]
     [Authorize]
     [SwaggerTag("Habit tracker")]
-    //[ServiceFilter(typeof(GlobalExceptionFilter))]
+    [ServiceFilter(typeof(GlobalExceptionFilter))]
     public class HabitsController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
@@ -36,12 +36,15 @@ namespace WebApi.Controllers
         [HttpGet]
         [SwaggerOperation("Get sorted habits")]
         [ProducesResponseType(typeof(IEnumerable<HabitReadDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<HabitReadDto>>> GetSortedByNameDesc([FromQuery] string? sortingBy)
+        public async Task<ActionResult<IEnumerable<HabitReadDto>>> GetSortedByNameDesc([FromQuery] string? sortBy)
         {
             int userId = int.Parse(User.FindFirstValue("Id"));
-            IEnumerable<HabitReadDto> habits = sortingBy switch
+            IEnumerable<HabitReadDto> habits = sortBy switch
             {
                 "Name" => await _unit.HabitService.GetSortedByNameAsc(userId),
+                "NameDesc" => await _unit.HabitService.GetSortedByNameDesc(userId),
+                "Creation" => await _unit.HabitService.GetByUserId(userId),
+                "CreationDesc" => await _unit.HabitService.GetByUserIdDesc(userId),
                 _ => await _unit.HabitService.GetByUserId(userId),
             };
             return Ok(habits);

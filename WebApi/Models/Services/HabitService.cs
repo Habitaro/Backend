@@ -48,6 +48,14 @@ namespace WebApi.Models.Services
             return dtos;
         }
 
+        public async Task<IEnumerable<HabitReadDto>> GetByUserIdDesc(int userId)
+        {
+            var habits = await _manager.HabitRepository.GetByUserId(userId);
+            var dtos = _mapper.Map<IEnumerable<Habit>, IEnumerable<HabitReadDto>>(habits);
+
+            return dtos.OrderByDescending(h => h.Id);
+        }
+
         public async Task<IEnumerable<HabitReadDto>> GetSortedByNameAsc(int userId)
         {
             var habits = await _manager.HabitRepository.GetByUserId(userId);

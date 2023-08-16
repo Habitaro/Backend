@@ -7,7 +7,7 @@ namespace WebApi.Models.Services.Abstractions
         Task Add(HabitCreationDto dto, int userId);
 
         Task<IEnumerable<HabitReadDto>> GetByUserId(int userId);
-
+        Task<IEnumerable<HabitReadDto>> GetByUserIdDesc(int userId);
         Task<IEnumerable<HabitReadDto>> GetSortedByNameAsc(int userId);
 
         Task<IEnumerable<HabitReadDto>> GetSortedByNameDesc(int userId);
