@@ -34,7 +34,9 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [SwaggerOperation("Get sorted habits")]
+        [SwaggerOperation(summary: "Get current user`s habits",
+            description: "Options for sorting query: Name, NameDesc, Creation, CreationDesc" +
+            "\n\nWithout query collection will be sorted by creation time")]
         [ProducesResponseType(typeof(IEnumerable<HabitReadDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<HabitReadDto>>> GetSortedByNameDesc([FromQuery] string? sortBy)
         {
