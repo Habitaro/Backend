@@ -3,15 +3,19 @@ using DataAccess.Entities;
 
 namespace WebApi.Models.Services.Helpers
 {
-    public class HabitDayListToDictionaryConverter : ITypeConverter<IEnumerable<HabitDay>, IDictionary<DateOnly, bool>>
+    public class HabitDayListToDictionaryConverter : ITypeConverter<IEnumerable<HabitDay>, IDictionary<string, bool>>
     {
-        public IDictionary<DateOnly, bool> Convert(IEnumerable<HabitDay> source, IDictionary<DateOnly, bool> destination, ResolutionContext context)
+        public HabitDayListToDictionaryConverter()
         {
-            var dictionary = new Dictionary<DateOnly, bool>();
+        }
+
+        public IDictionary<string, bool> Convert(IEnumerable<HabitDay> source, IDictionary<string, bool> destination, ResolutionContext context)
+        {
+            var dictionary = new Dictionary<string, bool>();
 
             foreach (var habitDay in source)
             {
-                dictionary[DateOnly.FromDateTime(habitDay.Date)] = habitDay.IsCompleted;
+                dictionary[habitDay.Date.ToString()] = habitDay.IsCompleted;
             }
 
             return dictionary;

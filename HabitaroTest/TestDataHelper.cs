@@ -111,14 +111,14 @@ namespace HabitaroTest
                         {
                             Id = 1,
                             HabitId = 1,
-                            Date = DateTime.Now,
+                            Date = DateOnly.FromDateTime(DateTime.Now),
                             IsCompleted = false
                         },
                         new HabitDay()
                         {
                             Id = 2,
                             HabitId = 1,
-                            Date = DateTime.Now.AddDays(1),
+                            Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                             IsCompleted = false
                         }
                     },
@@ -135,14 +135,14 @@ namespace HabitaroTest
                         {
                             Id = 3,
                             HabitId = 2,
-                            Date = DateTime.Now,
+                            Date = DateOnly.FromDateTime(DateTime.Now),
                             IsCompleted = true,
                         },
                         new HabitDay()
                         {
                             Id = 4,
                             HabitId = 2,
-                            Date = DateTime.Now.AddDays(1),
+                            Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                             IsCompleted = false
                         }
                     }

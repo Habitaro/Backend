@@ -70,5 +70,13 @@ namespace DataAccess
                 Name = "Gold cat 3"
             });
         }
+
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        {
+            base.ConfigureConventions(configurationBuilder);
+
+            configurationBuilder.Properties<DateOnly>()
+                .HaveConversion<DateOnlyConverter>();
+        }
     }
 }

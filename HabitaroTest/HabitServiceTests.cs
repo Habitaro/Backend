@@ -63,10 +63,10 @@ namespace HabitaroTest
                     UserId = 1,
                     Name = "Drink water",
                     Description = "Drink at least 2l of water every day",
-                    Progress = new Dictionary<DateOnly, bool>()
+                    Progress = new Dictionary<string, bool>()
                     {
-                        [DateOnly.FromDateTime(DateTime.Now)] = false,
-                        [DateOnly.FromDateTime(DateTime.Now.AddDays(1))] = false
+                        [DateOnly.FromDateTime(DateTime.Now).ToString()] = false,
+                        [DateOnly.FromDateTime(DateTime.Now.AddDays(1)).ToString()] = false
                     }
                 },
                 new HabitReadDto()
@@ -75,10 +75,10 @@ namespace HabitaroTest
                     UserId = 1,
                     Name = "15 min of sport",
                     Description = "",
-                    Progress = new Dictionary<DateOnly, bool>()
+                    Progress = new Dictionary<string, bool>()
                     {
-                        [DateOnly.FromDateTime(DateTime.Now)] = false,
-                        [DateOnly.FromDateTime(DateTime.Now.AddDays(1))] = false
+                        [DateOnly.FromDateTime(DateTime.Now).ToString()] = false,
+                        [DateOnly.FromDateTime(DateTime.Now.AddDays(1)).ToString()] = false
                     }
                 }
             };
@@ -107,13 +107,12 @@ namespace HabitaroTest
             //Arrange
             var expected = new HabitCreationDto()
             {
-                UserId = 1,
                 Name = "Test habit"
             };
 
             //Act
-            await _service.Add(expected);
-            var actualHabits = await _service.GetByUserId(expected.UserId);
+            await _service.Add(expected, 1);
+            var actualHabits = await _service.GetByUserId(1);
 
             //Assert
             Assert.That(actualHabits, Is.Not.Null);

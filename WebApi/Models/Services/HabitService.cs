@@ -26,12 +26,12 @@ namespace WebApi.Models.Services
             {
                 new HabitDay()
                 {
-                    Date = DateTime.Now,
+                    Date = DateOnly.FromDateTime(DateTime.Now),
                     IsCompleted = false
                 },
                 new HabitDay()
                 {
-                    Date = DateTime.Now.AddDays(1),
+                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                     IsCompleted = false
                 }
             };
@@ -46,6 +46,27 @@ namespace WebApi.Models.Services
             var dtos = _mapper.Map<IEnumerable<Habit>, IEnumerable<HabitReadDto>>(habits);
 
             return dtos;
+        }
+
+        public async Task<IEnumerable<HabitReadDto>> GetByUserIdDesc(int userId)
+        {
+            var dtos = await GetByUserId(userId);
+
+            return dtos.OrderByDescending(h => h.Id);
+        }
+
+        public async Task<IEnumerable<HabitReadDto>> GetSortedByNameAsc(int userId)
+        {
+            var dtos = await GetByUserId(userId);
+
+            return dtos.OrderBy(h => h.Name);
+        }
+
+        public async Task<IEnumerable<HabitReadDto>> GetSortedByNameDesc(int userId)
+        {
+            var dtos = await GetByUserId(userId);
+
+            return dtos.OrderByDescending(h => h.Name);
         }
     }
 }

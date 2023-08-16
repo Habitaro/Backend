@@ -20,6 +20,7 @@ namespace WebApi.Startup
             });
             services.AddScoped<IRepositoryManager, RepositoryManager>();
             services.AddAutoMapper(cfg => cfg.AddProfile<HabitaroMapProfile>());
+            services.AddTransient<HabitDayListToDictionaryConverter>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<GlobalExceptionFilter>();
 
