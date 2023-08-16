@@ -5,6 +5,10 @@ namespace WebApi.Models.Services.Helpers
 {
     public class HabitDayListToDictionaryConverter : ITypeConverter<IEnumerable<HabitDay>, IDictionary<DateOnly, bool>>
     {
+        public HabitDayListToDictionaryConverter()
+        {
+        }
+
         public IDictionary<DateOnly, bool> Convert(IEnumerable<HabitDay> source, IDictionary<DateOnly, bool> destination, ResolutionContext context)
         {
             var dictionary = new Dictionary<DateOnly, bool>();

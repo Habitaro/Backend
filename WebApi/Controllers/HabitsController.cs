@@ -13,7 +13,7 @@ namespace WebApi.Controllers
     [ApiController]
     [Authorize]
     [SwaggerTag("Habit tracker")]
-    [ServiceFilter(typeof(GlobalExceptionFilter))]
+    //[ServiceFilter(typeof(GlobalExceptionFilter))]
     public class HabitsController : ControllerBase
     {
         private readonly IUnitOfWork _unit;
