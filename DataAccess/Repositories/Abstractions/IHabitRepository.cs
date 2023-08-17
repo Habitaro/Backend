@@ -12,5 +12,7 @@ namespace DataAccess.Repositories.Abstractions
         Task Add(Habit habit);
 
         Task<IEnumerable<Habit>> GetByUserId(int userId);
+
+        Task Update(Habit);
     }
 }
