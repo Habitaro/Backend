@@ -51,5 +51,12 @@ namespace WebApi.Controllers
             };
             return Ok(habits);
         }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] HabitUpdateDto dto)
+        {
+            await _unit.HabitService.Update(id, dto);
+            return NoContent();
+        }
     }
 }
