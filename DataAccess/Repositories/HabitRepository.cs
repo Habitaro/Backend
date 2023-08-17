@@ -23,6 +23,12 @@ namespace DataAccess.Repositories
             await _context.AddAsync(habit);
         }
 
+        public async Task<Habit?> GetById(int id)
+        {
+            var habit = await _context.Habits.SingleOrDefaultAsync(h => h.Id == id);
+            return habit;
+        }
+
         public async Task<IEnumerable<Habit>> GetByUserId(int userId)
         {
             var Habits = await _context.Habits.Include(h => h.Progress).Where(h => h.UserId == userId).ToListAsync();
