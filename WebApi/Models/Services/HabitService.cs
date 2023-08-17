@@ -68,5 +68,10 @@ namespace WebApi.Models.Services
 
             return dtos.OrderByDescending(h => h.Name);
         }
+
+        public Task Update(int id, HabitEditDto dto)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

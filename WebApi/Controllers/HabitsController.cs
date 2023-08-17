@@ -51,5 +51,14 @@ namespace WebApi.Controllers
             };
             return Ok(habits);
         }
+
+        [HttpPatch("{id}")]
+        [SwaggerOperation(summary: "Update habit data")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> Update(int id, [FromBody] HabitEditDto dto)
+        {
+            await _unit.HabitService.Update(id, dto);
+            return NoContent();
+        }
     }
 }

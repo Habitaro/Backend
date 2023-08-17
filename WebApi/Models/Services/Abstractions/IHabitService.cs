@@ -11,5 +11,6 @@ namespace WebApi.Models.Services.Abstractions
         Task<IEnumerable<HabitReadDto>> GetSortedByNameAsc(int userId);
 
         Task<IEnumerable<HabitReadDto>> GetSortedByNameDesc(int userId);
+        Task Update(int id, HabitEditDto dto);
     }
 }
