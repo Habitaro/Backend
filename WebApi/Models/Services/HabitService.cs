@@ -69,9 +69,13 @@ namespace WebApi.Models.Services
             return dtos.OrderByDescending(h => h.Name);
         }
 
-        public Task Update(int id, HabitEditDto dto)
+        public async Task Update(int id, HabitEditDto dto)
         {
-            throw new NotImplementedException();
+            var habit = await _manager.HabitRepository.GetById(id);
+            habit.Name = dto.Name ?? habit.Name;
+            habit.Description = dto.Description ?? habit.Description;
+
+            await _manager.SaveChanges();
         }
     }
 }
