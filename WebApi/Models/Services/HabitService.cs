@@ -71,7 +71,8 @@ namespace WebApi.Models.Services
 
         public async Task Update(int id, HabitEditDto dto)
         {
-            var habit = await _manager.HabitRepository.GetById(id);
+            var habit = await _manager.HabitRepository.GetById(id)
+                ?? throw new ArgumentNullException(message: $"Habit with id {id} was not found", null);
             habit.Name = dto.Name ?? habit.Name;
             habit.Description = dto.Description ?? habit.Description;
 

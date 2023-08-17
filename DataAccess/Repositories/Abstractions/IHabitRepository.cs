@@ -10,7 +10,7 @@ namespace DataAccess.Repositories.Abstractions
     public interface IHabitRepository
     {
         Task Add(Habit habit);
-        Task<Habit> GetById(int id);
+        Task<Habit?> GetById(int id);
         Task<IEnumerable<Habit>> GetByUserId(int userId);
     }
 }

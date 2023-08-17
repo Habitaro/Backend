@@ -53,10 +53,15 @@ namespace WebApi.Controllers
         }
 
         [HttpPatch("{id}")]
-        [SwaggerOperation(summary: "Update habit data")]
+        [SwaggerOperation(summary: "Update habit`s data")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Update(int id, [FromBody] HabitEditDto dto)
         {
+            if (dto.Name == null && dto.Description == null)
+            {
+                return BadRequest("No data to update");
+            }
+
             await _unit.HabitService.Update(id, dto);
             return NoContent();
         }

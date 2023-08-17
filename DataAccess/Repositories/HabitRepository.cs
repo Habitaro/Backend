@@ -23,9 +23,9 @@ namespace DataAccess.Repositories
             await _context.AddAsync(habit);
         }
 
-        public async Task<Habit> GetById(int id)
+        public async Task<Habit?> GetById(int id)
         {
-            var habit = await _context.Habits.SingleAsync(h => h.Id == id);
+            var habit = await _context.Habits.SingleOrDefaultAsync(h => h.Id == id);
             return habit;
         }
 
