@@ -71,6 +71,14 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete(int id)
         {
+            var habit = await _unit.HabitService.GetById(id);
+            var userId = int.Parse(User.FindFirstValue("Id"));
+            
+            if (habit.UserId != userId)
+            {
+                throw new InvalidOperationException(message: "Access denied");
+            }
+
             await _unit.HabitService.Delete(id);
             return NoContent();
         }
