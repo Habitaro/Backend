@@ -34,5 +34,10 @@ namespace DataAccess.Repositories
             var Habits = await _context.Habits.Include(h => h.Progress).Where(h => h.UserId == userId).ToListAsync();
             return Habits;
         }
+
+        public void Delete(Habit habit)
+        {
+            _context.Habits.Remove(habit);
+        }
     }
 }
