@@ -65,5 +65,14 @@ namespace WebApi.Controllers
             await _unit.HabitService.Update(id, dto);
             return NoContent();
         }
+
+        [HttpDelete("{id}")]
+        [SwaggerOperation(summary: "Delete habit by id")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _unit.HabitService.Delete(id);
+            return NoContent();
+        }
     }
 }
