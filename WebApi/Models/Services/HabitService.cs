@@ -78,5 +78,22 @@ namespace WebApi.Models.Services
 
             await _manager.SaveChanges();
         }
+
+        public async Task Delete(int id)
+        {
+            var habit = await _manager.HabitRepository.GetById(id)
+                ?? throw new ArgumentNullException(message: $"Habit with id {id} was not found", null);
+            _manager.HabitRepository.Delete(habit);
+            await _manager.SaveChanges();
+        }
+
+        public async Task<HabitReadDto> GetById(int id)
+        {
+            var habit = await _manager.HabitRepository.GetById(id)
+                ?? throw new ArgumentNullException(message: $"Habit with id {id} was not found", null);
+            var dto = _mapper.Map<Habit, HabitReadDto>(habit);
+
+            return dto;
+        }
     }
 }

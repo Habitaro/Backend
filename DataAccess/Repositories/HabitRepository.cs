@@ -25,7 +25,7 @@ namespace DataAccess.Repositories
 
         public async Task<Habit?> GetById(int id)
         {
-            var habit = await _context.Habits.SingleOrDefaultAsync(h => h.Id == id);
+            var habit = await _context.Habits.AsNoTracking().Include(h => h.Progress).SingleOrDefaultAsync(h => h.Id == id);
             return habit;
         }
 
@@ -33,6 +33,11 @@ namespace DataAccess.Repositories
         {
             var Habits = await _context.Habits.Include(h => h.Progress).Where(h => h.UserId == userId).ToListAsync();
             return Habits;
+        }
+
+        public void Delete(Habit habit)
+        {
+            _context.Habits.Remove(habit);
         }
     }
 }
