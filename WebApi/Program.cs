@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Serialization;
 using WebApi.Startup;
 using WebApi.Startup.Filters;
 
@@ -10,7 +11,10 @@ builder.Services.RegisterServices(builder.Configuration);
 
 builder.Services.RegisterAuthorization(builder.Configuration);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(opt => 
+    {
+        opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+    });
 
 builder.Services.RegisterSwagger();
 

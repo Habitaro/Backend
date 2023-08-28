@@ -25,7 +25,7 @@ namespace DataAccess.Repositories
 
         public async Task<Habit?> GetById(int id)
         {
-            var habit = await _context.Habits.AsNoTracking().Include(h => h.Progress).SingleOrDefaultAsync(h => h.Id == id);
+            var habit = await _context.Habits.Include(h => h.Progress).SingleOrDefaultAsync(h => h.Id == id);
             return habit;
         }
 
