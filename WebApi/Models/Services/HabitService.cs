@@ -95,5 +95,14 @@ namespace WebApi.Models.Services
 
             return dto;
         }
+
+        public async Task UpdateProgress(int id, ProgressDto dto)
+        {
+            var habit = await _manager.HabitRepository.GetById(id)
+                ?? throw new ArgumentNullException(message: $"Habit with id {id} was not found", null);
+            habit.Progress.Single(h => h.Date == dto.Date).IsCompleted = dto.Status;
+
+            await _manager.SaveChanges();
+        }
     }
 }
