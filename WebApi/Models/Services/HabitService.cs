@@ -100,8 +100,14 @@ namespace WebApi.Models.Services
         {
             var habit = await _manager.HabitRepository.GetById(id)
                 ?? throw new ArgumentNullException(message: $"Habit with id {id} was not found", null);
-            habit.Progress.Single(h => h.Date == dto.Date).IsCompleted = dto.Status;
+            var habitDay = habit.Progress.SingleOrDefault(h => h.Date == dto.Date);
+            
+            if (habitDay == null || dto.Date > DateOnly.FromDateTime(DateTime.Now))
+            {
+                throw new InvalidOperationException(message: "Invalid date");
+            }
 
+            habitDay.IsCompleted = dto.Status;
             await _manager.SaveChanges();
         }
     }
