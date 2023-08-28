@@ -15,5 +15,6 @@ namespace WebApi.Models.Services.Abstractions
         Task Update(int id, HabitEditDto dto);
 
         Task Delete(int id);
+        Task UpdateProgress(int id, ProgressDto dto);
     }
 }
