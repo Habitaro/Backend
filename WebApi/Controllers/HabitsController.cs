@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
@@ -21,17 +20,7 @@ namespace WebApi.Controllers
         public HabitsController(IUnitOfWork unit)
         {
             _unit = unit;
-        }
-
-        [HttpPost]
-        [SwaggerOperation("Add Habit")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> AddHabit([FromBody] HabitCreationDto dto)
-        {
-            var userId = int.Parse(User.FindFirstValue("Id"));
-            await _unit.HabitService.Add(dto, userId);
-            return NoContent();
-        }
+        } 
 
         [HttpGet]
         [SwaggerOperation(summary: "Get current user`s habits",
@@ -50,6 +39,16 @@ namespace WebApi.Controllers
                 _ => await _unit.HabitService.GetByUserId(userId),
             };
             return Ok(habits);
+        }
+
+        [HttpPost]
+        [SwaggerOperation("Add Habit")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> AddHabit([FromBody] HabitCreationDto dto)
+        {
+            var userId = int.Parse(User.FindFirstValue("Id"));
+            await _unit.HabitService.Add(dto, userId);
+            return NoContent();
         }
 
         [HttpPatch("{id}")]
@@ -83,7 +82,9 @@ namespace WebApi.Controllers
             return NoContent();
         }
 
-        [HttpPut("{id}")]
+        [HttpPatch("Progress/{id}")]
+        [SwaggerOperation(summary: "Update habit progress")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateHabitProgress(int id, ProgressDto dto)
         {
             await _unit.HabitService.UpdateProgress(id, dto);
