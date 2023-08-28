@@ -26,11 +26,11 @@ namespace WebApi.Controllers
         [HttpPost]
         [SwaggerOperation("Add Habit")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> AddHabit([FromBody]HabitCreationDto dto)
+        public async Task<IActionResult> AddHabit([FromBody] HabitCreationDto dto)
         {
             var userId = int.Parse(User.FindFirstValue("Id"));
             await _unit.HabitService.Add(dto, userId);
-            return NoContent();           
+            return NoContent();
         }
 
         [HttpGet]
@@ -73,13 +73,21 @@ namespace WebApi.Controllers
         {
             var habit = await _unit.HabitService.GetById(id);
             var userId = int.Parse(User.FindFirstValue("Id"));
-            
+
             if (habit.UserId != userId)
             {
                 throw new InvalidOperationException(message: "Access denied");
             }
 
             await _unit.HabitService.Delete(id);
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateHabitProgress(int id, ProgressDto dto)
+        {
+            await _unit.HabitService.UpdateProgress(id, dto);
+
             return NoContent();
         }
     }
