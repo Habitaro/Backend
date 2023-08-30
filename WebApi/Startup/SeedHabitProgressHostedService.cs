@@ -4,16 +4,18 @@ namespace WebApi.Startup
 {
     public class SeedHabitProgressHostedService : IHostedService
     {
-        public IUnitOfWork Unit { get; set; }
+        private IServiceProvider services;
 
-        public SeedHabitProgressHostedService(IUnitOfWork unit)
+        public SeedHabitProgressHostedService(IServiceProvider services)
         {
-            Unit = unit;
+            this.services = services;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            await Unit.HabitService.SeedProgress(cancellationToken);
+            using var scope = services.CreateScope();
+            using var unit = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+            await unit.HabitService.SeedProgress(cancellationToken);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

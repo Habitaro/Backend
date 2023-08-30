@@ -23,6 +23,7 @@ namespace WebApi.Startup
             services.AddTransient<HabitDayListToDictionaryConverter>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<GlobalExceptionFilter>();
+            services.AddHostedService<SeedHabitProgressHostedService>();
 
             return services;
         }
