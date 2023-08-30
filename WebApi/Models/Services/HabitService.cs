@@ -111,7 +111,7 @@ namespace WebApi.Models.Services
             await _manager.SaveChanges();
         }
 
-        public async Task SeedProgress()
+        public async Task SeedProgress(CancellationToken cancellationToken)
         {
             var habits = await _manager.HabitRepository.GetAll();
             var today = DateOnly.FromDateTime(DateTime.Now);
@@ -120,7 +120,7 @@ namespace WebApi.Models.Services
             {
                 var lastProgressDate = habit.Progress.Last().Date;
 
-                if (lastProgressDate != today.AddDays(1))
+                if (lastProgressDate != today.AddDays(1) && !cancellationToken.IsCancellationRequested)
                 {
                     while(lastProgressDate < today.AddDays(1))
                     {
