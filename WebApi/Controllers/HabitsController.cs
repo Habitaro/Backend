@@ -20,14 +20,14 @@ namespace WebApi.Controllers
         public HabitsController(IUnitOfWork unit)
         {
             _unit = unit;
-        } 
+        }
 
         [HttpGet]
         [SwaggerOperation(summary: "Get current user`s habits",
             description: "Options for sorting query: Name, NameDesc, Creation, CreationDesc" +
             "\n\nWithout query collection will be sorted by creation time")]
         [ProducesResponseType(typeof(IEnumerable<HabitReadDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<HabitReadDto>>> GetSortedByNameDesc([FromQuery] string? sortBy)
+        public async Task<ActionResult<IEnumerable<HabitReadDto>>> GetAll([FromQuery] string? sortBy)
         {
             int userId = int.Parse(User.FindFirstValue("Id"));
             IEnumerable<HabitReadDto> habits = sortBy switch
@@ -39,6 +39,22 @@ namespace WebApi.Controllers
                 _ => await _unit.HabitService.GetByUserId(userId),
             };
             return Ok(habits);
+        }
+
+        [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "Get habit data by habit id")]
+        [ProducesResponseType(typeof(HabitReadDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<HabitReadDto>> GetById(int id)
+        {
+            var habit = await _unit.HabitService.GetById(id);
+            var userId = int.Parse(User.FindFirstValue("Id"));
+
+            if (habit.UserId == userId)
+            {
+                return Ok(habit);
+            }
+
+            return BadRequest("Access denied");
         }
 
         [HttpPost]

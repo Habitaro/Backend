@@ -39,8 +39,6 @@ namespace DataAccess.Repositories
             if (_isDisposed) return;
 
             context.Dispose();
-            userRepository = null;
-            habitRepository = null;
 
             _isDisposed = true;
             GC.SuppressFinalize(this);
