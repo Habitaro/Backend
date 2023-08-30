@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Filters;
 using WebApi.Startup.Filters;
 using WebApi.Models.Services.Helpers;
+using Hangfire;
 
 namespace WebApi.Startup
 {
