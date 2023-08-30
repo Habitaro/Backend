@@ -16,5 +16,7 @@ namespace WebApi.Models.Services.Abstractions
 
         Task Delete(int id);
         Task UpdateProgress(int id, ProgressDto dto);
+
+        Task SeedProgress(CancellationToken cancellationToken);
     }
 }

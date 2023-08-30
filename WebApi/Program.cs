@@ -1,3 +1,4 @@
+using Hangfire;
 using Newtonsoft.Json.Serialization;
 using WebApi.Startup;
 using WebApi.Startup.Filters;
@@ -28,6 +29,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseHangfireDashboard("/hangfire");
+
+RecurringJob.AddOrUpdate<SeedHabitProgressHostedService>("seed-habit-progress", x => x.StartAsync(CancellationToken.None), Cron.Daily);
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -110,5 +110,33 @@ namespace WebApi.Models.Services
             habitDay.IsCompleted = dto.Status;
             await _manager.SaveChanges();
         }
+
+        public async Task SeedProgress(CancellationToken cancellationToken)
+        {
+            var habits = await _manager.HabitRepository.GetAll();
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            foreach (var habit in habits)
+            {
+                var lastProgressDate = habit.Progress.Last().Date;
+
+                if (lastProgressDate != today.AddDays(1) && !cancellationToken.IsCancellationRequested)
+                {
+                    while(lastProgressDate < today.AddDays(1))
+                    {
+                        lastProgressDate = lastProgressDate.AddDays(1);
+
+                        habit.Progress.Add(new HabitDay()
+                        {
+                            HabitId = habit.Id,
+                            Date = lastProgressDate,
+                            IsCompleted = false
+                        });
+                    }
+                }
+            }
+
+            await _manager.SaveChanges();
+        }
     }
 }

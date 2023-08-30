@@ -1,12 +1,12 @@
-﻿using DataAccess.Repositories.Abstractions;
+﻿using DataAccess;
 using DataAccess.Repositories;
-using DataAccess;
-using WebApi.Models.Services.Abstractions;
-using WebApi.Models.Services;
+using DataAccess.Repositories.Abstractions;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc.Filters;
-using WebApi.Startup.Filters;
+using WebApi.Models.Services;
+using WebApi.Models.Services.Abstractions;
 using WebApi.Models.Services.Helpers;
+using WebApi.Startup.Filters;
 
 namespace WebApi.Startup
 {
@@ -23,6 +23,15 @@ namespace WebApi.Startup
             services.AddTransient<HabitDayListToDictionaryConverter>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<GlobalExceptionFilter>();
+            services.AddHostedService<SeedHabitProgressHostedService>();
+
+            services.AddHangfire(globalConfig => globalConfig
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(configuration.GetConnectionString("HangfireDb")));
+
+            services.AddHangfireServer();
 
             return services;
         }

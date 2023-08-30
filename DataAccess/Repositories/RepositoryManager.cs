@@ -12,20 +12,36 @@ namespace DataAccess.Repositories
     {
         private readonly HabitaroDbContext context;
 
-        public IUserRepository UserRepository { get; }
+        private bool _isDisposed;
 
-        public IHabitRepository HabitRepository { get; }
+        private IUserRepository userRepository;
+
+        private IHabitRepository habitRepository;
+
+        public IUserRepository UserRepository { get => userRepository; }
+
+        public IHabitRepository HabitRepository { get => habitRepository; }
 
         public RepositoryManager(HabitaroDbContext context)
         {
             this.context = context;
-            UserRepository = new UserRepository(context);
-            HabitRepository = new HabitRepository(context);
+            userRepository = new UserRepository(context);
+            habitRepository = new HabitRepository(context);
         }
 
         public async Task SaveChanges()
         {
             await context.SaveChangesAsync();
+        }
+
+        public void Dispose()
+        {
+            if (_isDisposed) return;
+
+            context.Dispose();
+
+            _isDisposed = true;
+            GC.SuppressFinalize(this);
         }
     }
 }
