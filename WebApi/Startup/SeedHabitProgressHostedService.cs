@@ -4,7 +4,7 @@ namespace WebApi.Startup
 {
     public class SeedHabitProgressHostedService : IHostedService
     {
-        private IServiceProvider services;
+        private readonly IServiceProvider services;
 
         public SeedHabitProgressHostedService(IServiceProvider services)
         {
@@ -18,9 +18,9 @@ namespace WebApi.Startup
             await unit.HabitService.SeedProgress(cancellationToken);
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => Console.WriteLine("SeedHabitProgressHostedService is shut down"), cancellationToken);
         }
     }
 }
