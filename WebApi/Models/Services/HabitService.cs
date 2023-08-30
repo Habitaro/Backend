@@ -111,7 +111,7 @@ namespace WebApi.Models.Services
             await _manager.SaveChanges();
         }
 
-        private async Task SeedProgress()
+        public async Task SeedProgress()
         {
             var habits = await _manager.HabitRepository.GetAll();
             var today = DateOnly.FromDateTime(DateTime.Now);
