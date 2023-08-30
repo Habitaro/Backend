@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Repositories.Abstractions
 {
-    public interface IRepositoryManager
+    public interface IRepositoryManager : IDisposable
     {
         IUserRepository UserRepository { get; }
 
