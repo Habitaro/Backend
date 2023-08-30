@@ -1,3 +1,4 @@
+using Hangfire;
 using Newtonsoft.Json.Serialization;
 using WebApi.Startup;
 using WebApi.Startup.Filters;
@@ -28,6 +29,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseHangfireDashboard("/hangfire");
 
 app.UseAuthentication();
 app.UseAuthorization();
