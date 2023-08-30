@@ -18,6 +18,6 @@ namespace DataAccess.Entities
 
         public User User { get; set; }
 
-        public IEnumerable<HabitDay> Progress { get; set; } = null!;
+        public ICollection<HabitDay> Progress { get; set; } = null!;
     }
 }
